@@ -1,0 +1,5 @@
+<h1>Currently at: {{location.name}}</h1>
+<span>You have the following options:</span>
+<dsr-movement [possibleMovements]="possibleMovements" (stateChanged)="onStateChange()"></dsr-movement>
+<dsr-items [possibleItems]="possibleItems" (stateChanged)="onStateChange()"></dsr-items>
+<dsr-enemies [possibleEnemies]="possibleEnemies" (stateChanged)="onStateChange()"></dsr-enemies>

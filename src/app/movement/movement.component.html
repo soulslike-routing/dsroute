@@ -1,0 +1,9 @@
+<h3>Movement</h3>
+
+<div *ngIf="possibleMovements.length>0;else displayNoMovement">
+  <div *ngFor="let location of possibleMovements">
+    <button type="button" (click)="moveTo(location.id)">{{location.name}}</button>
+  </div>
+</div>
+
+<ng-template #displayNoMovement><h4>You don't have any movement options atm</h4></ng-template>

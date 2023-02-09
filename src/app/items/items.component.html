@@ -1,0 +1,9 @@
+<h3>Items</h3>
+
+<div *ngIf="possibleItems.length>0;else displayNoItems">
+  <div *ngFor="let item of possibleItems">
+    <button type="button" (click)="collect(item.id)">{{item.name}}</button>
+  </div>
+</div>
+
+<ng-template #displayNoItems><h4>You don't have any items to collect here</h4></ng-template>

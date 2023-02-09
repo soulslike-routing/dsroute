@@ -1,0 +1,9 @@
+<h3>Enemies</h3>
+
+<div *ngIf="possibleEnemies.length>0;else displayNoEnemies">
+  <div *ngFor="let enemy of possibleEnemies">
+    <button type="button" (click)="kill(enemy.id)">{{enemy.name}}</button>
+  </div>
+</div>
+
+<ng-template #displayNoEnemies><h4>There are no enemies to kill here</h4></ng-template>
