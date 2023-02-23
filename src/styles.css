@@ -1,1 +1,23 @@
-/* You can add global styles to this file, and also import other style files */
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+.action-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+}
+
+.action-card h3, h4 {
+  text-align: center;
+}
+
+.button-container-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin-left: 2.5%;
+  max-width: 95%;
+}

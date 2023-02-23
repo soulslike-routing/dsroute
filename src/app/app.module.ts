@@ -6,6 +6,8 @@ import { LocationCardComponent } from './location-card/location-card.component';
 import { MovementComponent } from './movement/movement.component';
 import { ItemsComponent } from './items/items.component';
 import { EnemiesComponent } from './enemies/enemies.component';
+import { NiceButtonComponent } from './nice-button/nice-button.component';
+
 
 @NgModule({
   declarations: [
@@ -14,6 +16,7 @@ import { EnemiesComponent } from './enemies/enemies.component';
     MovementComponent,
     ItemsComponent,
     EnemiesComponent,
+    NiceButtonComponent,
   ],
   imports: [
     BrowserModule

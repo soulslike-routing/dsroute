@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Location} from "./location";
-import {LOCATIONS} from "./mock-locations";
+//import {LOCATIONS} from "./mock-locations";
+import map from '../assets/map.json'
 import {PlayerAction} from './player-action';
 import {ActionType} from "./action-type";
 import {Item} from "./item";
@@ -12,8 +13,10 @@ import {Enemy} from "./enemy";
 export class RouteService {
 
   route: PlayerAction[] = [];
-  map: Location[] = structuredClone(LOCATIONS);
+  //map: Location[] = structuredClone(LOCATIONS);
+  map: any = map.locations;
   currentLocation: Location = this.getLocationAtIndex(0);
+  senCounter:number = 0;
 
   constructor() { }
 
@@ -80,6 +83,12 @@ export class RouteService {
 
   performUnlocks(areaIDs: number[]): void {
     for (const ID of areaIDs) {
+      if (ID == 15) {
+        this.senCounter++;
+        if (this.senCounter != 2) {
+          continue;
+        }
+      }
       this.getLocationAtIndex(ID).locked = false;
     }
   }

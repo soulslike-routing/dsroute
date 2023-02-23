@@ -1,9 +1,10 @@
-<h3>Items</h3>
-
-<div *ngIf="possibleItems.length>0;else displayNoItems">
-  <div *ngFor="let item of possibleItems">
-    <button type="button" (click)="collect(item.id)">{{item.name}}</button>
+<div class="action-card">
+  <h3>Items</h3>
+  <div *ngIf="possibleItems.length>0;else displayNoItems">
+    <div *ngFor="let item of possibleItems">
+      <dsr-nice-button [displayable]="item" (onClick)="collect($event)"></dsr-nice-button>
+    </div>
   </div>
-</div>
 
-<ng-template #displayNoItems><h4>You don't have any items to collect here</h4></ng-template>
+  <ng-template #displayNoItems><h4>You don't have any items to collect here</h4></ng-template>
+</div>

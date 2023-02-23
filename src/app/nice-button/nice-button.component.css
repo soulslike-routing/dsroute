@@ -1,0 +1,18 @@
+.button-container {
+  border: 1px solid black;
+  border-radius: 5px;
+  box-sizing: border-box;
+  padding: 0px;
+  margin-bottom: 1%;
+}
+
+.button-container button {
+  padding: 0.5%;
+  border: 1px solid black;
+  border-radius: 5px;
+  background: white;
+  box-sizing: border-box;
+  box-shadow: none;
+  margin: 1%;
+  min-width: 30%;
+}

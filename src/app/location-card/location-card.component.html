@@ -1,5 +1,9 @@
-<h1>Currently at: {{location.name}}</h1>
-<span>You have the following options:</span>
-<dsr-movement [possibleMovements]="possibleMovements" (stateChanged)="onStateChange()"></dsr-movement>
-<dsr-items [possibleItems]="possibleItems" (stateChanged)="onStateChange()"></dsr-items>
-<dsr-enemies [possibleEnemies]="possibleEnemies" (stateChanged)="onStateChange()"></dsr-enemies>
+<div class="locationcard">
+  <h1>Currently at: {{location.name}}</h1>
+  <span>You have the following options:</span>
+  <div id="actioncontainer">
+    <dsr-movement [possibleMovements]="possibleMovements" (stateChanged)="onStateChange()" class="action"></dsr-movement>
+    <dsr-items [possibleItems]="possibleItems" (stateChanged)="onStateChange()" class="action"></dsr-items>
+    <dsr-enemies [possibleEnemies]="possibleEnemies" (stateChanged)="onStateChange()" class="action"></dsr-enemies>
+  </div>
+</div>
