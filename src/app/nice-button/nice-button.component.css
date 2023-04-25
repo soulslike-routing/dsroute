@@ -1,5 +1,5 @@
 .button-container {
-  border: 1px solid black;
+  border: 1px solid #ff006e;
   border-radius: 5px;
   box-sizing: border-box;
   padding: 0px;
@@ -12,13 +12,14 @@
 
 .button-container button {
   padding: 0.5%;
-  border: 1px solid black;
+  border: 1px solid #ff006e;
   border-radius: 5px;
-  background: white;
+  background: black;
   box-sizing: border-box;
   box-shadow: none;
   margin: 1%;
   min-width: 30%;
+  color:white;
 }
 
 .button-container button:hover {
@@ -31,4 +32,5 @@
 }
 
 .button-container span {
+  margin-right:10px;
 }

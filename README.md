@@ -4,7 +4,7 @@ Angular app to plan a Dark Souls Remastered Playthrough. The goal of this projec
 Once this planner reaches an acceptable stage, it will be hosted publicly on my website.
 
 ## TODO
-[] Refactor locked to accept multiple conditions (incl. removing current workarounds, i.e. sens unlocked by gargoyles and queelag  
+[X] Refactor locked to accept multiple conditions (incl. removing current workarounds, i.e. sens unlocked by gargoyles and queelag  
 [] write tests  
 [] refactor code  
 [] Export as json  

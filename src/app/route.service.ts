@@ -6,6 +6,7 @@ import {PlayerAction} from './player-action';
 import {ActionType} from "./action-type";
 import {Item} from "./item";
 import {Enemy} from "./enemy";
+import {Dependencies} from "./dependencies";
 
 @Injectable({
   providedIn: 'root'
@@ -54,7 +55,7 @@ export class RouteService {
     let possible: Location[] = [];
     for (const locID of this.currentLocation.connections) {
       let loc = this.getLocationAtIndex(locID);
-      if (!loc.locked) {
+      if (!this.hasDependencies(loc)) {
         possible.push(loc);
       }
     }
@@ -81,22 +82,41 @@ export class RouteService {
     return possible;
   }
 
-  performUnlocks(areaIDs: number[]): void {
+  performUnlocksByLocation(srcLocationID:number, areaIDs: number[]): void {
     for (const ID of areaIDs) {
-      if (ID == 15) {
-        this.senCounter++;
-        if (this.senCounter != 2) {
-          continue;
-        }
+      this.getLocationAtIndex(ID).dependencies.locations = this.getLocationAtIndex(ID).dependencies.locations.filter(obj => obj !== srcLocationID);
+      if (!this.getLocationAtIndex(ID).dependencies.hard_locked) {
+        this.unlockAll(ID);
       }
-      this.getLocationAtIndex(ID).locked = false;
     }
+  }
+
+  performUnlocksByEnemy(srcEnemyID:number, areaIDs: number[]): void {
+    for (const ID of areaIDs) {
+      this.getLocationAtIndex(ID).dependencies.enemies = this.getLocationAtIndex(ID).dependencies.enemies.filter(obj => obj !== srcEnemyID);
+      if (!this.getLocationAtIndex(ID).dependencies.hard_locked) {
+        this.unlockAll(ID);
+      }
+    }
+  }
+
+  performUnlocksByItem(srcItemID:number, areaIDs: number[]): void {
+    for (const ID of areaIDs) {
+      this.getLocationAtIndex(ID).dependencies.items = this.getLocationAtIndex(ID).dependencies.items.filter(obj => obj !== srcItemID);
+      if (!this.getLocationAtIndex(ID).dependencies.hard_locked) {
+        this.unlockAll(ID);
+      }
+    }
+  }
+
+  unlockAll(locationToBeUnlockedID: number):void {
+    this.getLocationAtIndex(locationToBeUnlockedID).dependencies = {"locations":[],"enemies":[],"items":[],"hard_locked":false};
   }
 
   moveTo(ID: number): void {
     this.route.push({type: ActionType.GOTO, target: ID});
     this.currentLocation = this.getLocationAtIndex(ID);
-    this.performUnlocks(this.currentLocation.unlocks);
+    this.performUnlocksByLocation(ID, this.currentLocation.unlocks);
   }
 
   collect(ID: number): void {
@@ -106,7 +126,7 @@ export class RouteService {
       console.log('Error, item with ID '+ ID + ' is undefined!');
     } else {
       // @ts-ignore
-      this.performUnlocks(theItem.unlocks);
+      this.performUnlocksByItem(ID, theItem.unlocks);
       // @ts-ignore
       theItem.collected = true;
     }
@@ -119,9 +139,22 @@ export class RouteService {
       console.log('Error, enemy with ID '+ ID + ' is undefined!');
     } else {
       // @ts-ignore
-      this.performUnlocks(enemy.unlocks);
+      this.performUnlocksByEnemy(ID, enemy.unlocks);
       // @ts-ignore
       enemy.killed = true;
     }
+  }
+
+  hasDependencies(loc: Location) {
+    if (!(loc.dependencies.locations.length == 0)) {
+      return true;
+    }
+    if (!(loc.dependencies.enemies.length == 0)) {
+      return true;
+    }
+    if (!(loc.dependencies.items.length == 0)) {
+      return true;
+    }
+    return false;
   }
 }

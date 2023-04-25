@@ -1,11 +1,14 @@
 .locationcard {
   width: 90vw;
   height: 90vh;
-  border: 1px solid black;
+  border: 1px solid #ff006e;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  background-color:black;
+  color:white;
 }
 
 h1 {
@@ -23,7 +26,7 @@ h1 {
 
 .action {
   width: 30%;
-  border: 1px solid black;
+  border: 1px solid #ff006e;
   border-radius: 10px;
   overflow: scroll;
 }
