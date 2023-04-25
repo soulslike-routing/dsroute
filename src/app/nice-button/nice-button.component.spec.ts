@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import {EventEmitter} from '@angular/core';
 import { NiceButtonComponent } from './nice-button.component';
+import { By } from '@angular/platform-browser';
 
 describe('NiceButtonComponent', () => {
   let component: NiceButtonComponent;
@@ -44,6 +45,20 @@ describe('NiceButtonComponent', () => {
     const niceButtonElement: HTMLElement = fixture.nativeElement;
     const span = niceButtonElement.querySelector('span')!;
     expect(span.textContent).toEqual("💀");
+  });
 
+  it('should emit correct event on click', () => {
+    component.onClick.subscribe((displayableID:number) => {
+      expect(displayableID).toBe(-1);
+    });
+    fixture.nativeElement.querySelector('button').click();
+  });
+
+  it('should react to changing ids', () => {
+    component.displayable = {"id":42,"name":"cooler_name"};
+    component.onClick.subscribe((displayableID:number) => {
+      expect(displayableID).toBe(42);
+    });
+    fixture.nativeElement.querySelector('button').click();
   });
 });
