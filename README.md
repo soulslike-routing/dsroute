@@ -6,7 +6,7 @@ Once this planner reaches an acceptable stage, it will be hosted publicly on my 
 ## TODO
 [] Refactor locked to accept multiple conditions (incl. removing current workarounds, i.e. sens unlocked by gargoyles and queelag  
 [] write tests  
-[] refactor code
-[] Export as json
-[] Load from json
-[] Undo functionality
+[] refactor code  
+[] Export as json  
+[] Load from json  
+[] Undo functionality  
