@@ -4,6 +4,10 @@
   box-sizing: border-box;
   padding: 0px;
   margin-bottom: 1%;
+
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .button-container button {
@@ -15,4 +19,16 @@
   box-shadow: none;
   margin: 1%;
   min-width: 30%;
+}
+
+.button-container button:hover {
+  background-color: #ff006e;
+}
+
+.button-container button:active {
+  filter: brightness(85%);
+  color:white;
+}
+
+.button-container span {
 }

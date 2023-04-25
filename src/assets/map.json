@@ -7,7 +7,10 @@
     "locked": false,
     "unlocks": [],
     "items": [],
-    "enemies": [{"id": 0, "name": "Asylum Demon", "unlocks": [1], "killed": false, "respawns": false}]
+    "enemies": [
+      {"id": 0, "name": "Asylum Demon", "unlocks": [1], "killed": false, "respawns": false},
+      {"id": 1000, "name": "Hollow", "unlocks": [], "killed": false, "respawns": true}
+    ]
   },
   {
     "id": 1,
