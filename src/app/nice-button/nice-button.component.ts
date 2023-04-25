@@ -11,7 +11,7 @@ import {Item} from "../item";
   styleUrls: ['./nice-button.component.css']
 })
 export class NiceButtonComponent {
-  @Input() displayable!:any;
+  @Input() displayable!:Displayable;
   @Output() onClick: EventEmitter<any> = new EventEmitter();
   @Input() icon: String = "";
 
