@@ -3,14 +3,26 @@ Angular app to plan a Dark Souls Remastered Playthrough. The goal of this projec
 
 Once this planner reaches an acceptable stage, it will be hosted publicly on my website.
 
-## TODO
+# TODO
+
+## Development
 - [x] Refactor locked to accept multiple conditions (incl. removing current workarounds, i.e. sens unlocked by gargoyles and queelag  
 - [x] Setup testing framework  
 - [x] CUSTOM_ELEMENTS_SCHEMA for cleaner tests  
 - [ ] write frontend tests  
 - [ ] write backend tests  
 - [ ] write system tests  
+- [ ] Integrate CICD into github actions  
+- [ ] Display test status and coverage on readme for the flex  
 - [ ] refactor code  
+- [ ] Switch to overall TDD
+- [ ] Implement overall consistent error handling
+
+## Features
 - [ ] Export as json  
 - [ ] Load from json  
-- [ ] Undo functionality  
+- [ ] Undo functionalit
+      
+## Looks
+- [ ] Make it look nice :)
+
