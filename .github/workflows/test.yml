@@ -34,17 +34,16 @@ jobs:
       runs-on: ubuntu-latest
       
       steps:
+      - name: read coverage file
+        id: getcoverage
+        run: ls
+        
       - name: Checkout tools repo
         uses: actions/checkout@v3
         with:
           repository: VisualBean/reactive-readme
           path: readmecoverage
           
-      - name: read coverage file
-        id: getcoverage
-        run: ls
-        
-      - name: reactive-readme
-        uses: ./readmecoverage
+      - uses: ./readmecoverage
         with:
          value: ${{ steps.getcoverage.outputs.coverage }}
