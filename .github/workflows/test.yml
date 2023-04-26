@@ -38,10 +38,6 @@ jobs:
           node-version: [18.x]
       
       steps:
-      - name: reactive-readme
-        uses: VisualBean/reactive-readme@v1
-        with:
-         value: "abc"
       
       - uses: actions/checkout@v3
       
@@ -61,3 +57,7 @@ jobs:
           echo "coverage=$(cat ./coverage/dsroute/index.html)" >> .env
           cat .env
       
+      - name: reactive-readme
+        uses: VisualBean/reactive-readme@820e2e0b3d730eaef7c5b5f23960aef0b0e9a325
+        with:
+         value: "abc"
