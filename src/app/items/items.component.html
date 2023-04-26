@@ -1,6 +1,6 @@
 <div class="action-card">
   <h3>Items</h3>
-  <div *ngIf="possibleItems.length>0;else displayNoItems">
+  <div class="button-container-container" *ngIf="possibleItems.length>0;else displayNoItems">
     <div *ngFor="let item of possibleItems">
       <dsr-nice-button [displayable]="item" (onClick)="collect($event)"></dsr-nice-button>
     </div>

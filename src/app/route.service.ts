@@ -14,10 +14,8 @@ import {Dependencies} from "./dependencies";
 export class RouteService {
 
   route: PlayerAction[] = [];
-  //map: Location[] = structuredClone(LOCATIONS);
   map: any = map.locations;
   currentLocation: Location = this.getLocationAtIndex(0);
-  senCounter:number = 0;
 
   constructor() { }
 
@@ -55,6 +53,9 @@ export class RouteService {
     let possible: Location[] = [];
     for (const locID of this.currentLocation.connections) {
       let loc = this.getLocationAtIndex(locID);
+      if (loc == undefined) {
+        break;
+      }
       if (!this.hasDependencies(loc)) {
         possible.push(loc);
       }
@@ -122,7 +123,7 @@ export class RouteService {
   collect(ID: number): void {
     this.route.push({type: ActionType.PICKUP, target: ID});
     let theItem: Item | undefined = this.getItemAtCurrentLocationWithID(ID);
-    if (typeof theItem === undefined) {
+    if (typeof theItem === undefined || theItem == undefined) {
       console.log('Error, item with ID '+ ID + ' is undefined!');
     } else {
       // @ts-ignore
@@ -135,7 +136,7 @@ export class RouteService {
   kill(ID: number): void {
     this.route.push({type: ActionType.KILL, target: ID});
     let enemy: Enemy | undefined = this.getEnemyAtCurrentLocationWithID(ID);
-    if (typeof enemy === undefined) {
+    if (typeof enemy === undefined || enemy == undefined) {
       console.log('Error, enemy with ID '+ ID + ' is undefined!');
     } else {
       // @ts-ignore
