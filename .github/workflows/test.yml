@@ -41,7 +41,7 @@ jobs:
           
       - name: read coverage file
         id: getcoverage
-        run: echo "coverage=$(cat coverage/dsroute/index.html)" >> $GITHUB_OUTPUT
+        run: echo "coverage=$(cat ./coverage/dsroute/index.html)" >> $GITHUB_OUTPUT
         
       - name: reactive-readme
         uses: VisualBean/reactive-readme@v1
