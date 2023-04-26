@@ -38,6 +38,11 @@ jobs:
           node-version: [18.x]
       
       steps:
+      - name: reactive-readme
+        uses: VisualBean/reactive-readme@v1
+        with:
+         value: "abc"
+      
       - uses: actions/checkout@v3
       
       - name: Use Node.js ${{ matrix.node-version }}
@@ -55,9 +60,4 @@ jobs:
           touch .env
           echo "coverage=$(cat ./coverage/dsroute/index.html)" >> .env
           cat .env
-        
-      - name: reactive-readme
-        uses: VisualBean/reactive-readme@v1
-        with:
-         value: ${{ steps.getcoverage.outputs.coverage }}
-
+      
