@@ -81,7 +81,6 @@
               "zone.js",
               "zone.js/testing"
             ],
-            "browsers": "ChromeHeadless",
             "tsConfig": "tsconfig.spec.json",
             "assets": [
               "src/favicon.ico",
