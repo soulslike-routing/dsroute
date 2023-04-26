@@ -38,12 +38,13 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: VisualBean/reactive-readme
+          path: readmecoverage
           
       - name: read coverage file
         id: getcoverage
         run: ls
         
       - name: reactive-readme
-        uses: VisualBean/reactive-readme@v1
+        uses: ./readmecoverage
         with:
          value: ${{ steps.getcoverage.outputs.coverage }}
