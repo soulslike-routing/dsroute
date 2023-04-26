@@ -12,7 +12,7 @@ Once this planner reaches an acceptable stage, it will be hosted publicly on my 
 - [x] write frontend tests  
 - [ ] write backend tests  
 - [ ] write system tests  
-- [ ] Integrate CICD into github actions  
+- [x] Integrate CICD into github actions  
 - [ ] Display test status and coverage on readme for the flex  
 - [ ] refactor code  
 - [ ] Switch to overall TDD
