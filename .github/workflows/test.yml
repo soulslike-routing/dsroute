@@ -34,6 +34,11 @@ jobs:
       runs-on: ubuntu-latest
       
       steps:
+      - name: Checkout tools repo
+        uses: actions/checkout@v3
+        with:
+          repository: VisualBean/reactive-readme
+          
       - name: read coverage file
         id: getcoverage
         run: echo "coverage=$(cat coverage/dsroute/index.html)" >> $GITHUB_OUTPUT
