@@ -42,12 +42,8 @@ jobs:
           echo "coverage=$(cat ./coverage/dsroute/index.html)" >> .env
           cat .env
         
-      - name: Checkout tools repo
-        uses: actions/checkout@v3
-        with:
-          repository: VisualBean/reactive-readme
-          path: readmecoverage
-          
-      - uses: ./readmecoverage
+      - name: reactive-readme
+        uses: VisualBean/reactive-readme@v1
         with:
          value: ${{ steps.getcoverage.outputs.coverage }}
+
