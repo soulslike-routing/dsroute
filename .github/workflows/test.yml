@@ -37,7 +37,10 @@ jobs:
       - uses: actions/checkout@v3
       - name: read coverage file
         id: getcoverage
-        run: echo "coverage=$(cat ./coverage/dsroute/index.html)" >> "$GITHUB_ENV"
+        run: |
+          touch .env
+          echo "coverage=$(cat ./coverage/dsroute/index.html)" >> .env
+          cat .env
         
       - name: Checkout tools repo
         uses: actions/checkout@v3
