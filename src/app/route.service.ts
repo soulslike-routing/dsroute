@@ -19,6 +19,10 @@ export class RouteService {
 
   constructor() { }
 
+  getMap(): any {
+    return this.map;
+  }
+
   getRoute(): PlayerAction[] {
     return this.route;
   }
