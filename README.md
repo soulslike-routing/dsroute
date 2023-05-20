@@ -30,3 +30,5 @@ Once this planner reaches an acceptable stage, it will be hosted publicly on my 
 ## Looks
 - [ ] Make it look nice :)
 
+## Other
+- [ ] Deploy to [my homepage](https://www.sailsman.xyz)
