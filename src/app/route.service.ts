@@ -99,11 +99,11 @@ export class RouteService {
   }
 
   collect(ID: number): void {
-    this.route.push({type: ActionType.PICKUP, target: ID});
     let theItem: Item | undefined = this.getObjOfTypeAtCurrentLocationWithID("items", ID) as Item | undefined;
     if (typeof theItem === undefined || theItem == undefined) {
       console.log('Error, item with ID '+ ID + ' is undefined!');
     } else {
+      this.route.push({type: ActionType.PICKUP, target: ID});
       // @ts-ignore
       this.performUnlocksBy("items", ID, theItem.unlocks);
       // @ts-ignore
@@ -112,11 +112,11 @@ export class RouteService {
   }
 
   kill(ID: number): void {
-    this.route.push({type: ActionType.KILL, target: ID});
     let enemy: Enemy | undefined = this.getObjOfTypeAtCurrentLocationWithID("enemies", ID) as Enemy | undefined;
     if (typeof enemy === undefined || enemy == undefined) {
       console.log('Error, enemy with ID '+ ID + ' is undefined!');
     } else {
+      this.route.push({type: ActionType.KILL, target: ID});
       // @ts-ignore
       this.performUnlocksBy("enemies", ID, enemy.unlocks);
       // @ts-ignore
