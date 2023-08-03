@@ -32,3 +32,40 @@ Once this planner reaches an acceptable stage, it will be hosted publicly on my 
 
 ## Other
 - [ ] Deploy to [my homepage](https://www.sailsman.xyz)
+
+# Testing progress
+## UI
+### Location Card
+- [x] Creation
+- [x] Displays correct location name
+### Movement component
+- [x] Creation
+- [x] Only renders button container when there are locations
+- [x] Displays correct text without locations
+- [x] Displays n buttons when given n locations
+- [x] Passes correct data to buttons
+- [x] Emits event when moveTo is called
+### Items Component
+- [x] Creation
+- [x] Only renders button container when there are items
+- [x] Displays correct text without items
+- [x] Displays n buttons when given n items
+- [x] Passes correct data to buttons
+- [x] Emits event when collect is called
+### Enemies Component
+- [x] Creation
+- [x] Only renders button container when there are enemies
+- [x] Displays correct text without enemies
+- [x] Displays n buttons when given n enemies
+- [x] Passes correct data to buttons
+- [x] Passes empty string for icon for respawning enemies
+- [x] Passes skull emoji for non-respawning enemies
+- [x] Emits event when kill is called
+### Button Component
+- [x] Creation
+- [x] Stores displayable correctly
+- [x] Displays button with correct displayable name
+- [x] Has no icon by default
+- [x] Has icon when specified
+- [x] Emits event no click
+- [x] Dynamically reacts to changing ids
