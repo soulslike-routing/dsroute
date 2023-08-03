@@ -35,23 +35,15 @@ export class RouteService {
     return this.map[index];
   }
 
-  getItemAtCurrentLocationWithID(ID: number): Item | undefined {
-    for (let item of this.currentLocation.items) {
-      if (item.id == ID) {
-        return item;
+  getObjOfTypeAtCurrentLocationWithID(objType: "items" | "enemies", ID: number): Item | Enemy | undefined {
+    for (let obj of this.currentLocation[objType]) {
+      if (obj.id == ID) {
+        return obj;
       }
     }
     return undefined;
   }
 
-  getEnemyAtCurrentLocationWithID(ID: number): Enemy | undefined {
-    for (let enemy of this.currentLocation.enemies) {
-      if (enemy.id == ID) {
-        return enemy;
-      }
-    }
-    return undefined;
-  }
 
   possibleLocations(): Location[] {
     let possible: Location[] = [];
@@ -108,7 +100,7 @@ export class RouteService {
 
   collect(ID: number): void {
     this.route.push({type: ActionType.PICKUP, target: ID});
-    let theItem: Item | undefined = this.getItemAtCurrentLocationWithID(ID);
+    let theItem: Item | undefined = this.getObjOfTypeAtCurrentLocationWithID("items", ID) as Item | undefined;
     if (typeof theItem === undefined || theItem == undefined) {
       console.log('Error, item with ID '+ ID + ' is undefined!');
     } else {
@@ -121,7 +113,7 @@ export class RouteService {
 
   kill(ID: number): void {
     this.route.push({type: ActionType.KILL, target: ID});
-    let enemy: Enemy | undefined = this.getEnemyAtCurrentLocationWithID(ID);
+    let enemy: Enemy | undefined = this.getObjOfTypeAtCurrentLocationWithID("enemies", ID) as Enemy | undefined;
     if (typeof enemy === undefined || enemy == undefined) {
       console.log('Error, enemy with ID '+ ID + ' is undefined!');
     } else {
