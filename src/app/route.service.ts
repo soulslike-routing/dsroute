@@ -87,27 +87,9 @@ export class RouteService {
     return possible;
   }
 
-  performUnlocksByLocation(srcLocationID:number, areaIDs: number[]): void {
+  performUnlocksBy(key: "locations" | "enemies" | "items", srcObjID:number, areaIDs: number[]): void {
     for (const ID of areaIDs) {
-      this.getLocationAtIndex(ID).dependencies.locations = this.getLocationAtIndex(ID).dependencies.locations.filter(obj => obj !== srcLocationID);
-      if (!this.getLocationAtIndex(ID).dependencies.hard_locked) {
-        this.unlockAll(ID);
-      }
-    }
-  }
-
-  performUnlocksByEnemy(srcEnemyID:number, areaIDs: number[]): void {
-    for (const ID of areaIDs) {
-      this.getLocationAtIndex(ID).dependencies.enemies = this.getLocationAtIndex(ID).dependencies.enemies.filter(obj => obj !== srcEnemyID);
-      if (!this.getLocationAtIndex(ID).dependencies.hard_locked) {
-        this.unlockAll(ID);
-      }
-    }
-  }
-
-  performUnlocksByItem(srcItemID:number, areaIDs: number[]): void {
-    for (const ID of areaIDs) {
-      this.getLocationAtIndex(ID).dependencies.items = this.getLocationAtIndex(ID).dependencies.items.filter(obj => obj !== srcItemID);
+      this.getLocationAtIndex(ID).dependencies[key] = this.getLocationAtIndex(ID).dependencies[key].filter(obj => obj !== srcObjID);
       if (!this.getLocationAtIndex(ID).dependencies.hard_locked) {
         this.unlockAll(ID);
       }
@@ -121,7 +103,7 @@ export class RouteService {
   moveTo(ID: number): void {
     this.route.push({type: ActionType.GOTO, target: ID});
     this.currentLocation = this.getLocationAtIndex(ID);
-    this.performUnlocksByLocation(ID, this.currentLocation.unlocks);
+    this.performUnlocksBy("locations", ID, this.currentLocation.unlocks);
   }
 
   collect(ID: number): void {
@@ -131,7 +113,7 @@ export class RouteService {
       console.log('Error, item with ID '+ ID + ' is undefined!');
     } else {
       // @ts-ignore
-      this.performUnlocksByItem(ID, theItem.unlocks);
+      this.performUnlocksBy("items", ID, theItem.unlocks);
       // @ts-ignore
       theItem.collected = true;
     }
@@ -144,7 +126,7 @@ export class RouteService {
       console.log('Error, enemy with ID '+ ID + ' is undefined!');
     } else {
       // @ts-ignore
-      this.performUnlocksByEnemy(ID, enemy.unlocks);
+      this.performUnlocksBy("enemies", ID, enemy.unlocks);
       // @ts-ignore
       enemy.killed = true;
     }
