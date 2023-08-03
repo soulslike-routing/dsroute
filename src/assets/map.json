@@ -63,7 +63,7 @@
     "connections": [1, 0],
     "dependencies": {"locations": [3], "enemies": [], "items": [], "hard_locked": false},
     "unlocks": [4],
-    "items": [{"id": 0, "name": "Key to eastern Wing", "collected": false, "count":  1, "unlocks": [5]}],
+    "items": [{"id": 3, "name": "Key to eastern Wing", "collected": false, "count":  1, "unlocks": [5]}],
     "enemies": []
   },
   {

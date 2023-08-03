@@ -20,8 +20,8 @@ describe('ItemsComponent', () => {
     fixture = TestBed.createComponent(ItemsComponent);
     component = fixture.componentInstance;
     component.possibleItems = [
-      {"id": 0, "name": "i0", "collected": false, "count":  1, "unlocks": []},
-      {"id": 1, "name": "i1", "collected": true, "count":  5, "unlocks": [10, 11]}
+      {"id": 1, "name": "i1", "collected": false, "count":  1, "unlocks": []},
+      {"id": 2, "name": "i2", "collected": true, "count":  5, "unlocks": [10, 11]}
     ];
     fixture.detectChanges();
   });
@@ -53,13 +53,14 @@ describe('ItemsComponent', () => {
   it('should pass the correct objects down to the buttons', () => {
     const itemsDebug: DebugElement = fixture.debugElement;
     const buttons = itemsDebug.queryAll(By.directive(NiceButtonComponent));
-    expect(buttons[0].componentInstance.displayable).toEqual({"id": 0, "name": "i0", "collected": false, "count":  1, "unlocks": []});
-    expect(buttons[1].componentInstance.displayable).toEqual({"id": 1, "name": "i1", "collected": true, "count":  5, "unlocks": [10, 11]});
+    expect(buttons[0].componentInstance.displayable).toEqual({"id": 1, "name": "i1", "collected": false, "count":  1, "unlocks": []});
+    expect(buttons[1].componentInstance.displayable).toEqual({"id": 2, "name": "i2", "collected": true, "count":  5, "unlocks": [10, 11]});
   });
 
   it('should emit an event when collect is called', () => {
     spyOn(component.stateChanged, 'emit');
-    component.collect(0);
+    console.log = () => {};
+    component.collect(1);
     expect(component.stateChanged.emit).toHaveBeenCalled();
   });
 
