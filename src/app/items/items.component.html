@@ -2,7 +2,7 @@
   <h3>Items</h3>
   <div class="button-container-container" *ngIf="possibleItems.length>0;else displayNoItems">
     <div *ngFor="let item of possibleItems">
-      <dsr-nice-button [displayable]="item" [bannerUrl]="'/assets/items/' + item.id + '.png'" (onClick)="collect($event)"></dsr-nice-button>
+      <dsr-nice-button [displayable]="item" [bannerUrl]="'assets/items/' + item.id + '.png'" (onClick)="collect($event)"></dsr-nice-button>
     </div>
   </div>
 
