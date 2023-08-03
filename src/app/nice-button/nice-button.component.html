@@ -1,3 +1,3 @@
-<div class="button-container">
-  <button id="actualbtn" type="button" (click)="interact()">{{displayable.name}}</button><span>{{icon}}</span>
+<div class="button-container" [ngStyle]="{'background-image': 'url(' + bannerUrl + ')'}">
+  <button id="actualbtn" type="button" (click)="interact()"><span>{{icon}}</span>{{displayable.name}}</button>
 </div>

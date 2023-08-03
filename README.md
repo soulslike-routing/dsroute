@@ -15,16 +15,20 @@ Once this planner reaches an acceptable stage, it will be hosted publicly on my 
 - [x] Integrate CICD into github actions  
 - [ ] Display test status and coverage on readme for the flex  
 - [ ] refactor code  
-- [ ] Switch to overall TDD
 - [ ] Implement overall consistent error handling
 
 ## Features
 - [ ] Export as json  
 - [ ] Load from json  
-- [ ] Undo functionalit
+- [ ] Undo functionality
+- [ ] Add support for mobile devices (horizontal mode)
       
 ## Looks
 - [ ] Make it look nice :)
+- [x] Implement banner images
+- [ ] Get images for all regions
+- [ ] Get images for all items
+- [ ] Get images for all enemies
 
 ## Other
 - [ ] Deploy to [my homepage](https://www.sailsman.xyz)

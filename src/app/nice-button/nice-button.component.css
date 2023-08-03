@@ -8,6 +8,10 @@
   display:flex;
   justify-content: space-between;
   align-items: center;
+
+  height: 15dvh;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .button-container button {
@@ -20,6 +24,7 @@
   margin: 1%;
   min-width: 30%;
   color:white;
+  margin-left: 5%;
 }
 
 .button-container button:hover {
@@ -33,4 +38,5 @@
 
 .button-container span {
   margin-right:10px;
+  background: transparent;
 }

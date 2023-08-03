@@ -14,6 +14,7 @@ export class NiceButtonComponent {
   @Input() displayable!:Displayable;
   @Output() onClick: EventEmitter<any> = new EventEmitter();
   @Input() icon: String = "";
+  @Input() bannerUrl: String = "";
 
   constructor(private routeService:RouteService) {
   }
