@@ -31,14 +31,14 @@ describe('LocationCardComponent', () => {
 
     component = fixture.componentInstance;
     component.location =   {
-    "id": 0,
-    "name": "my_epic_locationname",
-    "connections": [1],
-    "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
-    "unlocks": [],
-    "items": [],
-    "enemies": []
-  };
+      "id": 0,
+      "name": "my_epic_locationname",
+      "connections": [1],
+      "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
+      "unlocks": [],
+      "items": [],
+      "enemies": []
+    };
     fixture.detectChanges();
   });
 

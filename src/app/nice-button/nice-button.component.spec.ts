@@ -27,7 +27,7 @@ describe('NiceButtonComponent', () => {
     expect(component.displayable).toEqual({"id":-1, "name":"testname"});
   });
 
-  it('should have button with "testname"', () => {
+  it('has button with textContent matching displayable name', () => {
     const niceButtonElement: HTMLElement = fixture.nativeElement;
     const button = niceButtonElement.querySelector('button')!;
     expect(button.textContent).toEqual('testname');

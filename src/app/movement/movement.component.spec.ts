@@ -89,7 +89,7 @@ describe('MovementComponent', () => {
   });
   });
 
-  it('should emit an event when collect is called', () => {
+  it('should emit an event when moveTo is called', () => {
     spyOn(component.stateChanged, 'emit');
     component.moveTo(1);
     expect(component.stateChanged.emit).toHaveBeenCalled();
