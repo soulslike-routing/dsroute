@@ -20,10 +20,17 @@ Once this planner reaches an acceptable stage, it will be hosted publicly on my 
 - [ ] Create different test suites for different kinds of tests in one file on same topic
 
 ## Features
+- [ ] Display current route (maybe horizontally below everything)
+- [ ] Make route editable from route screen
+- [ ] Soul counter
+- [ ] Character editor
+- [ ] Possibility to level character (spend souls)
+- [ ] Integrate npcs / merchants
 - [ ] Export as json  
 - [ ] Load from json  
 - [ ] Undo functionality
 - [ ] Add support for mobile devices (horizontal mode)
+- [ ] Display some kind of "back" indicator next to previous location
       
 ## Looks
 - [ ] Make it look nice :)
@@ -33,9 +40,10 @@ Once this planner reaches an acceptable stage, it will be hosted publicly on my 
 - [ ] Get nice and fitting images for all regions
 - [ ] Get nice and fitting images for all items
 - [ ] Get nice and fitting images for all enemies
+- [ ] Big location image in background of location card (experiment with that, does it look good?)
 
 ## Other
-- [ ] Deploy to [my homepage](https://www.sailsman.xyz)
+- [x] Deploy to [my homepage](https://www.sailsman.xyz) (only linked)
 
 # Testing progress
 ## UI
