@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {RouteService} from "../route.service";
-import {Enemy} from "../enemy";
+import {Enemy} from "../enemy.interface";
 
 @Component({
   selector: 'dsr-enemies',

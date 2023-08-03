@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
-import {Location} from "./location";
+import {Location} from "./location.interface";
 //import {LOCATIONS} from "./mock-locations";
 import map from '../assets/map.json'
-import {PlayerAction} from './player-action';
-import {ActionType} from "./action-type";
-import {Item} from "./item";
-import {Enemy} from "./enemy";
-import {Dependencies} from "./dependencies";
+import {PlayerAction} from './player-action.interface';
+import {ActionType} from "./action-type.interface";
+import {Item} from "./item.interface";
+import {Enemy} from "./enemy.interface";
+import {Dependencies} from "./dependencies.interface";
 
 @Injectable({
   providedIn: 'root'

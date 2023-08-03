@@ -1,9 +1,9 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import { Displayable } from "../displayable";
+import { Displayable } from "../displayable.interface";
 import {RouteService} from "../route.service";
-import {Location} from "../location";
-import {Enemy} from "../enemy";
-import {Item} from "../item";
+import {Location} from "../location.interface";
+import {Enemy} from "../enemy.interface";
+import {Item} from "../item.interface";
 
 @Component({
   selector: 'dsr-nice-button',

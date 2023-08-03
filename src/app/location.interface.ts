@@ -1,6 +1,6 @@
-import {Item} from "./item";
-import {Enemy} from "./enemy";
-import {Dependencies} from "./dependencies";
+import {Item} from "./item.interface";
+import {Enemy} from "./enemy.interface";
+import {Dependencies} from "./dependencies.interface";
 
 export interface Location {
   id: number;

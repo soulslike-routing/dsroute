@@ -1,8 +1,8 @@
 import {ChangeDetectorRef, Component} from '@angular/core';
 import {RouteService} from "../route.service";
-import {Location} from "../location";
-import {Item} from "../item";
-import {Enemy} from "../enemy";
+import {Location} from "../location.interface";
+import {Item} from "../item.interface";
+import {Enemy} from "../enemy.interface";
 
 @Component({
   selector: 'dsr-location-card',

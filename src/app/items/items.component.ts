@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {RouteService} from "../route.service";
-import {Item} from "../item";
+import {Item} from "../item.interface";
 
 @Component({
   selector: 'dsr-items',

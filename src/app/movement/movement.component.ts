@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {RouteService} from "../route.service";
-import { Location } from '../location';
+import { Location } from '../location.interface';
 
 @Component({
   selector: 'dsr-movement',

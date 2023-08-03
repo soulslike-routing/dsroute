@@ -1,4 +1,4 @@
-import { Location } from './location';
+import { Location } from './location.interface';
 
 export const LOCATIONS: Location[] = [
   {
