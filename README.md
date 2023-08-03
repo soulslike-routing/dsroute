@@ -9,8 +9,8 @@ Once this planner reaches an acceptable stage, it will be hosted publicly on my 
 - [x] Refactor locked to accept multiple conditions (incl. removing current workarounds, i.e. sens unlocked by gargoyles and queelag  
 - [x] Setup testing framework  
 - [x] CUSTOM_ELEMENTS_SCHEMA for cleaner tests  
-- [x] write frontend tests  
-- [ ] write backend tests  
+- [x] write UI tests  
+- [ ] write logic tests  
 - [ ] write system tests  
 - [x] Integrate CICD into github actions  
 - [ ] Display test status and coverage on readme for the flex  
