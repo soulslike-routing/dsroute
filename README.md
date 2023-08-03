@@ -69,3 +69,11 @@ Once this planner reaches an acceptable stage, it will be hosted publicly on my 
 - [x] Has icon when specified
 - [x] Emits event no click
 - [x] Dynamically reacts to changing ids
+
+## Logic
+### Map & Route
+- [x] Loads location data from json file
+- [x] Starts with empty route
+- [x] Starts at Undead Asylum
+- [x] getLocationAtIndex returns correct locations
+- [ ] Correctly stores movements in route
