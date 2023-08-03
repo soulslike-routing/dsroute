@@ -14,8 +14,10 @@ Once this planner reaches an acceptable stage, it will be hosted publicly on my 
 - [ ] write system tests  
 - [x] Integrate CICD into github actions  
 - [ ] Display test status and coverage on readme for the flex  
-- [ ] refactor code  
+- [x] refactor (ok for now)
 - [ ] Implement overall consistent error handling
+- [ ] Refactor testnames to use other verbs than 'should' in test name
+- [ ] Create different test suites for different kinds of tests in one file on same topic
 
 ## Features
 - [ ] Export as json  
@@ -25,10 +27,12 @@ Once this planner reaches an acceptable stage, it will be hosted publicly on my 
       
 ## Looks
 - [ ] Make it look nice :)
+- [ ] Nice favicon
+- [ ] Dynamic title bar
 - [x] Implement banner images
-- [ ] Get images for all regions
-- [ ] Get images for all items
-- [ ] Get images for all enemies
+- [ ] Get nice and fitting images for all regions
+- [ ] Get nice and fitting images for all items
+- [ ] Get nice and fitting images for all enemies
 
 ## Other
 - [ ] Deploy to [my homepage](https://www.sailsman.xyz)
@@ -76,4 +80,5 @@ Once this planner reaches an acceptable stage, it will be hosted publicly on my 
 - [x] Starts with empty route
 - [x] Starts at Undead Asylum
 - [x] getLocationAtIndex returns correct locations
-- [ ] Correctly stores movements in route
+- [x] Correctly stores basic movements in route
+- [x] Correctly refuses to store invalid movements in route

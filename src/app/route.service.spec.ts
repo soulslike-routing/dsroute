@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import map from '../assets/map.json'
 import { RouteService } from './route.service';
+import {ActionType} from "./action-type.interface";
 
 describe('RouteService', () => {
   let service: RouteService;
@@ -33,5 +34,103 @@ describe('RouteService', () => {
     expect(service.getLocationAtIndex(12)).toBe(map["locations"][12]);
   });
 
-  // TODO Mock some kind of map and test routing functions
+  it('should correctly store movements', () => {
+   service.map = [{
+      "id": 0,
+      "name": "my_epic_locationname",
+      "connections": [1],
+      "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
+      "unlocks": [],
+      "items": [],
+      "enemies": []
+    },
+    {
+      "id": 1,
+      "name": "my_second_location",
+      "connections": [0, 2],
+      "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
+      "unlocks": [],
+      "items": [],
+      "enemies": []
+    },
+    {
+      "id": 2,
+      "name": "my_third_location",
+      "connections": [1],
+      "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
+      "unlocks": [],
+      "items": [],
+      "enemies": []
+    }];
+    service.currentLocation = service.getLocationAtIndex(0);
+
+    expect(service.getRoute().length).toBe(0);
+
+    service.moveTo(1);
+    expect(service.getRoute().length).toBe(1);
+    expect(service.getRoute()).toEqual([{type: ActionType.GOTO, target: 1}]);
+
+    service.moveTo(0);
+    expect(service.getRoute().length).toBe(2);
+    expect(service.getRoute()).toEqual([{type: ActionType.GOTO, target: 1}, {type: ActionType.GOTO, target: 0}]);
+
+    service.moveTo(1);
+    service.moveTo(2);
+    expect(service.getRoute().length).toBe(4);
+    expect(service.getRoute()).toEqual([
+      {type: ActionType.GOTO, target: 1},
+      {type: ActionType.GOTO, target: 0},
+      {type: ActionType.GOTO, target: 1},
+      {type: ActionType.GOTO, target: 2}
+    ]);
+  });
+
+  it('refuses to store invalid moves in route', () => {
+   service.map = [{
+      "id": 0,
+      "name": "my_epic_locationname",
+      "connections": [1],
+      "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
+      "unlocks": [],
+      "items": [],
+      "enemies": []
+    },
+    {
+      "id": 1,
+      "name": "my_second_location",
+      "connections": [0, 2],
+      "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
+      "unlocks": [],
+      "items": [],
+      "enemies": []
+    },
+    {
+      "id": 2,
+      "name": "my_third_location",
+      "connections": [1],
+      "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
+      "unlocks": [],
+      "items": [],
+      "enemies": []
+    },
+    {
+      "id": 3,
+      "name": "my_secret_location",
+      "connections": [],
+      "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
+      "unlocks": [],
+      "items": [],
+      "enemies": []
+    }];
+    service.currentLocation = service.getLocationAtIndex(0);
+
+    expect(service.getRoute().length).toBe(0);
+
+    service.moveTo(1);
+    service.moveTo(2);
+    service.moveTo(3);
+    expect(service.getRoute().length).toBe(2);
+    expect(service.getRoute()).toEqual([{type: ActionType.GOTO, target: 1}, {type: ActionType.GOTO, target: 2}]);
+
+  });
 });

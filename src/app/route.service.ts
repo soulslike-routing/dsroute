@@ -93,9 +93,13 @@ export class RouteService {
   }
 
   moveTo(ID: number): void {
-    this.route.push({type: ActionType.GOTO, target: ID});
-    this.currentLocation = this.getLocationAtIndex(ID);
-    this.performUnlocksBy("locations", ID, this.currentLocation.unlocks);
+    if (this.possibleLocations().find(e => e.id == ID)) {
+      this.route.push({type: ActionType.GOTO, target: ID});
+      this.currentLocation = this.getLocationAtIndex(ID);
+      this.performUnlocksBy("locations", ID, this.currentLocation.unlocks);
+    } else {
+      console.log("Error, tried to move to invalid location");
+    }
   }
 
   collect(ID: number): void {
