@@ -34,8 +34,7 @@ Once this planner reaches an acceptable stage, it will be hosted publicly on my 
       
 ## Looks
 - [ ] Make it look nice :)
-- [ ] Nice favicon
-- [ ] Dynamic title bar
+- [x] Nice favicon(s) and title
 - [x] Implement banner images
 - [ ] Get nice and fitting images for all regions
 - [ ] Get nice and fitting images for all items
