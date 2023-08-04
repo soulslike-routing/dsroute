@@ -28,10 +28,5 @@ jobs:
       run: npm run build:prod
 
     - name: Deploy
-      if: success()
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        deploy_branch: gh-pages # The branch the action should deploy to.
-        publish_dir: dist/dsroute
-        enable_jekyll: true
+      run: |
+        npm run deploy

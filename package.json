@@ -8,7 +8,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test --no-watch --no-progress --karma-config=karma.conf.js",
     "build:prod": "ng build --configuration production --base-href https://0815sailsman.github.io/dsroute/",
-    "test:headless": "ng test --no-watch --no-progress --karma-config=karma.conf.js"
+    "test:headless": "ng test --no-watch --no-progress --karma-config=karma.conf.js",
+    "deploy": "ng deploy --base-href=/dsroute/"
   },
   "private": true,
   "dependencies": {
