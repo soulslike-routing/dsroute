@@ -1,4 +1,4 @@
-<div class="locationcard">
+<div class="locationcard" [ngStyle]="{'background-image': 'url(assets/locations/' + location.id + 'BIG.jpg)'}">
   <h1>Currently at: {{location.name}}</h1>
   <span>You have the following options:</span>
   <div id="actioncontainer">

@@ -1,7 +1,7 @@
 <div class="action-card">
   <h3>Movement</h3>
   <div class="button-container-container" *ngIf="possibleMovements.length>0;else displayNoMovement">
-    <div *ngFor="let location of possibleMovements">
+    <div style="background: transparent;" *ngFor="let location of possibleMovements">
       <dsr-nice-button [displayable]="location" [bannerUrl]="'assets/locations/' + location.id + '.jpg'" (onClick)="moveTo($event)"></dsr-nice-button>
     </div>
   </div>

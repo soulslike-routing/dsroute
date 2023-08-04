@@ -14,12 +14,15 @@ Once this planner reaches an acceptable stage, it will be hosted publicly on my 
 - [ ] write system tests  
 - [x] Integrate CICD into github actions  
 - [ ] Display test status and coverage on readme for the flex  
-- [x] refactor (ok for now)
+- [x] refactor route service code duplication
+- [ ] refactor css for background black / transparent
 - [ ] Implement overall consistent error handling
 - [ ] Refactor testnames to use other verbs than 'should' in test name
 - [ ] Create different test suites for different kinds of tests in one file on same topic
+- [ ] Build a pipeline for image creation that makes it possible to easily track the author and create copies in different sizes / layouts for different use cases of an image
 
 ## Features
+- [x] Big location image in background of location card (experiment with that, does it look good?)
 - [ ] Display current route (maybe horizontally below everything)
 - [ ] Make route editable from route screen
 - [ ] Soul counter
@@ -31,15 +34,17 @@ Once this planner reaches an acceptable stage, it will be hosted publicly on my 
 - [ ] Undo functionality
 - [ ] Add support for mobile devices (horizontal mode)
 - [ ] Display some kind of "back" indicator next to previous location
+- [ ] Preload all assets
+- [ ] Displays loading animation while preloading
       
 ## Looks
 - [ ] Make it look nice :)
 - [x] Nice favicon(s) and title
 - [x] Implement banner images
-- [ ] Get nice and fitting images for all regions
+- [ ] Get nice and fitting images for all regions (movement card)
 - [ ] Get nice and fitting images for all items
 - [ ] Get nice and fitting images for all enemies
-- [ ] Big location image in background of location card (experiment with that, does it look good?)
+- [ ] Get nice and big images for all regions (big background)
 
 ## Other
 - [x] Deploy to [my homepage](https://www.sailsman.xyz) (only linked)

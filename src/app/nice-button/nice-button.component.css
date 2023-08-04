@@ -1,3 +1,7 @@
+:host {
+  background: transparent;
+}
+
 .button-container {
   border: 1px solid #ff006e;
   border-radius: 5px;

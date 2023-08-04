@@ -9,9 +9,12 @@
 
   background-color:black;
   color:white;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-h1 {
+h1, span {
+  background: transparent;
 }
 
 #actioncontainer {
@@ -22,6 +25,7 @@ h1 {
   margin-bottom: 1%;
   align-self: stretch;
   max-height: 90%;
+  background: transparent;
 }
 
 .action {
@@ -29,5 +33,6 @@ h1 {
   border: 1px solid #ff006e;
   border-radius: 10px;
   overflow: scroll;
+  background :transparent;
 }
 
