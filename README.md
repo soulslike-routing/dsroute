@@ -94,3 +94,5 @@ Once this planner reaches an acceptable stage, it will be hosted publicly on my 
 - [x] getLocationAtIndex returns correct locations
 - [x] Correctly stores basic movements in route
 - [x] Correctly refuses to store invalid movements in route
+
+
