@@ -1,6 +1,6 @@
 .locationcard {
-  width: 90vw;
-  height: 90vh;
+  width: 90dvw;
+  height: 70dvh;
   border: 1px solid #ff006e;
   border-radius: 10px;
   display: flex;

@@ -16,6 +16,7 @@ Once this planner reaches an acceptable stage, it will be hosted publicly on my 
 - [ ] Display test status and coverage on readme for the flex  
 - [x] refactor route service code duplication
 - [ ] refactor css for background black / transparent
+- [ ] Refactor route scroller maybe
 - [ ] Implement overall consistent error handling
 - [ ] Refactor testnames to use other verbs than 'should' in test name
 - [ ] Create different test suites for different kinds of tests in one file on same topic
@@ -23,12 +24,14 @@ Once this planner reaches an acceptable stage, it will be hosted publicly on my 
 
 ## Features
 - [x] Big location image in background of location card (experiment with that, does it look good?)
-- [ ] Display current route (maybe horizontally below everything)
-- [ ] Make route editable from route screen
+- [x] Design route display
+- [ ] Actually display current route
+- [ ] Make route editable from route screen (maybe popup on click on action)
 - [ ] Soul counter
 - [ ] Character editor
 - [ ] Possibility to level character (spend souls)
 - [ ] Integrate npcs / merchants
+- [ ] Design settings area next to route display
 - [ ] Export as json  
 - [ ] Load from json  
 - [ ] Undo functionality

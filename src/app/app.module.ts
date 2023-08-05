@@ -7,6 +7,7 @@ import { MovementComponent } from './movement/movement.component';
 import { ItemsComponent } from './items/items.component';
 import { EnemiesComponent } from './enemies/enemies.component';
 import { NiceButtonComponent } from './nice-button/nice-button.component';
+import { RouteCardComponent } from './route-card/route-card.component';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import { NiceButtonComponent } from './nice-button/nice-button.component';
     ItemsComponent,
     EnemiesComponent,
     NiceButtonComponent,
+    RouteCardComponent,
   ],
   imports: [
     BrowserModule

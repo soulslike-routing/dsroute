@@ -2,5 +2,12 @@ dsr-location-card {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 80dvh;
+}
+
+dsr-route-card {
+  display: flex;
+  height: 20dvh;
+  width: 60dvw;
+  justify-content: center;
 }
