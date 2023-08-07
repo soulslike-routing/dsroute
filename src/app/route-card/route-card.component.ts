@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import {ChangeDetectorRef, Component} from '@angular/core';
+import {RouteService} from "../route.service";
+import {PlayerAction} from "../player-action.interface";
+import {ActionType} from "../action-type.interface";
 
 @Component({
   selector: 'dsr-route-card',
@@ -7,6 +10,16 @@ import { Component } from '@angular/core';
 })
 export class RouteCardComponent {
 
-  playerActions :String[] = ["abc", "def", "ghi", "", "", "", "", "", "", "", ""];
+  actionTypeEnumReference = ActionType;
+  playerActions: PlayerAction[] = this.routeService.getRoute();
 
+  constructor(private routeService: RouteService, private ref: ChangeDetectorRef) {}
+
+  ngOnInit() {
+    this.playerActions = this.routeService.getRoute();
+  }
+
+  onStateChange(): void {
+    this.playerActions = this.routeService.getRoute();
+  }
 }
