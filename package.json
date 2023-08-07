@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build && ./extractAll.sh",
     "watch": "ng build --watch --configuration development",
     "test": "ng test --no-watch --no-progress --karma-config=karma.conf.js",
     "build:prod": "ng build --configuration production --base-href https://0815sailsman.github.io/dsroute/",

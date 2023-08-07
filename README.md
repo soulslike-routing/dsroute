@@ -21,6 +21,8 @@ Once this planner reaches an acceptable stage, it will be hosted publicly on my 
 - [ ] Refactor testnames to use other verbs than 'should' in test name
 - [ ] Create different test suites for different kinds of tests in one file on same topic
 - [ ] Build a pipeline for image creation that makes it possible to easily track the author and create copies in different sizes / layouts for different use cases of an image
+- [x] Script that extracts list of all location, enemy and item names for easier indexing
+- [ ] Refactor python extractor files into singular file that takes command line paramenter
 
 ## Features
 - [x] Big location image in background of location card (experiment with that, does it look good?)
