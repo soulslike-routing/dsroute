@@ -6,6 +6,9 @@ import {PlayerAction} from "../player-action.interface";
 import {RouteService} from "../route.service";
 import { ActionType } from "../action-type.interface";
 import {Location} from "../location.interface";
+import locations from '../../assets/locations.json'
+import items from '../../assets/items.json'
+import enemies from '../../assets/enemies.json'
 
 describe('RouteCardComponent', () => {
   let component: RouteCardComponent;
@@ -40,6 +43,7 @@ describe('RouteCardComponent', () => {
   });
 
   it("should start without any list items", () => {
+    expect(component.playerActions.length).toEqual(0);
     expect(fixture.debugElement.queryAll(By.css('li')).length).toEqual(0);
   });
 
@@ -53,6 +57,82 @@ describe('RouteCardComponent', () => {
     component.playerActions = [{type: ActionType.GOTO, target: 1}, {type: ActionType.GOTO, target: 2}, {type: ActionType.GOTO, target: 1}];
     fixture.detectChanges();
     expect(fixture.debugElement.queryAll(By.css('li')).length).toEqual(3);
+  });
+
+  it("properly looks up action target names", () => {
+    component.locations = {
+      "0": "location0",
+      "1": "location1"
+    };
+    expect(component.lookupName({type: ActionType.GOTO, target: 1})).toEqual("location1");
+    component.items = {
+      "0": "item0",
+    };
+    expect(component.lookupName({type: ActionType.PICKUP, target: 0})).toEqual("item0");
+    component.enemies = {
+      "0": "enemy0",
+    };
+    expect(component.lookupName({type: ActionType.KILL, target: 0})).toEqual("enemy0");
+  });
+
+  it("displays correct action name as figcaption using lookup", () => {
+    component.locations = {
+      "0": "my_epic_locationname",
+      "1": "my_second_location",
+      "2": "my_third_location"
+    };
+    component.playerActions = [{type: ActionType.GOTO, target: 1}];
+    fixture.detectChanges();
+    expect(fixture.debugElement.queryAll(By.css('figcaption'))[0].nativeElement.textContent).toEqual("my_second_location");
+
+    component.items = {
+      "0": "my_epic_itemname"
+    };
+    component.playerActions = [{type: ActionType.GOTO, target: 1}, {type: ActionType.PICKUP, target: 0}];
+    fixture.detectChanges();
+    expect(fixture.debugElement.queryAll(By.css('figcaption'))[0].nativeElement.textContent).toEqual("my_epic_itemname");
+
+    component.enemies = {
+      "0": "my_epic_enemyname"
+    };
+    component.playerActions = [
+      {type: ActionType.GOTO, target: 1},
+      {type: ActionType.PICKUP, target: 0},
+      {type: ActionType.GOTO, target: 2},
+      {type: ActionType.KILL, target: 0},
+    ];
+    fixture.detectChanges();
+    expect(fixture.debugElement.queryAll(By.css('figcaption'))[0].nativeElement.textContent).toEqual("my_epic_enemyname");
+  });
+
+  it("displays correct indicator emoji", () => {
+     component.locations = {
+      "0": "my_epic_locationname",
+      "1": "my_second_location",
+      "2": "my_third_location"
+    };
+    component.playerActions = [{type: ActionType.GOTO, target: 1}];
+    fixture.detectChanges();
+    expect(fixture.debugElement.queryAll(By.css('span'))[0].nativeElement.textContent).toEqual("🏃‍♀️");
+
+    component.items = {
+      "0": "my_epic_itemname"
+    };
+    component.playerActions = [{type: ActionType.GOTO, target: 1}, {type: ActionType.PICKUP, target: 0}];
+    fixture.detectChanges();
+    expect(fixture.debugElement.queryAll(By.css('span'))[0].nativeElement.textContent).toEqual("🖐️");
+
+    component.enemies = {
+      "0": "my_epic_enemyname"
+    };
+    component.playerActions = [
+      {type: ActionType.GOTO, target: 1},
+      {type: ActionType.PICKUP, target: 0},
+      {type: ActionType.GOTO, target: 2},
+      {type: ActionType.KILL, target: 0},
+    ];
+    fixture.detectChanges();
+    expect(fixture.debugElement.queryAll(By.css('span'))[0].nativeElement.textContent).toEqual("⚔️");
   });
 });
 
@@ -83,7 +163,7 @@ class MockRouteService extends RouteService{
       "connections": [0, 2],
       "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
       "unlocks": [],
-      "items": [],
+      "items": [{"id": 0, "name": "my_epic_itemname", "collected": false, "count":  1, "unlocks": []}],
       "enemies": []
     },
     {
@@ -93,6 +173,6 @@ class MockRouteService extends RouteService{
       "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
       "unlocks": [],
       "items": [],
-      "enemies": []
+      "enemies": [{"id": 0, "name": "my_epic_enemyname", "unlocks": [], "killed": false, "respawns": false}]
     }];
 }

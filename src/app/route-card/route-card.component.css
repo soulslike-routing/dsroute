@@ -9,6 +9,28 @@
   align-items: center;
 }
 
+#note {
+  position: relative;
+  color: white;
+  width: 50dvw;
+  text-align: center;
+}
+
+.indicator {
+  position: absolute;
+  top: 25%;
+  left: -35%;
+  z-index: 25;
+  background: transparent;
+
+  /* horizontal flip for correct walking direction */
+  -moz-transform: scale(-2, 2);
+  -webkit-transform: scale(-2, 2);
+  -o-transform: scale(-2, 2);
+  -ms-transform: scale(-2, 2);
+  transform: scale(-2, 2);
+}
+
 * {
   --sm-space: 1rem;
   --md-space: 4rem;
@@ -18,42 +40,52 @@
 
 .horizontal-media-scroller {
     max-width: calc(50dvw - 2 * var(--gap));
-  display: grid;
-  grid-auto-flow: column;
-  grid-gap: calc(var(--gap) / 2);
+
+  display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: nowrap;
   gap: calc(var(--gap) / 2);
   margin: 0;
-
   padding-left: var(--gap);
-
   padding-right: var(--gap);
-
-  overflow-x: auto;
+  overflow-x: scroll;
   overscroll-behavior-inline: contain;
+  overscroll-behavior-x: contain;
   -ms-scroll-snap-type: inline mandatory;
       scroll-snap-type: inline mandatory;
   scroll-padding-inline: var(--gap)
 }
 
 .horizontal-media-scroller > li {
-    display: inline-block
-
+    display: inline-block;
+    overflow-anchor: none;
     /*  container padding fix  */
   }
 
-.horizontal-media-scroller > li:last-of-type figure {
-      position: relative
-    }
+#anchor {
+  position: absolute;
+  top: 0px;
+  right: 10px;
+  overflow-anchor: auto;
+  height: 1px;
+  width: 51dvw;
+  z-index: -1000;
+}
 
-[dir="ltr"] .horizontal-media-scroller > li:last-of-type figure::after {
+.horizontal-media-scroller > li:first-of-type figure {
+  position: relative
+
+}
+
+[dir="ltr"] .horizontal-media-scroller > li:first-of-type figure::after {
         right: calc(var(--gap) * -1);
 }
 
-[dir="rtl"] .horizontal-media-scroller > li:last-of-type figure::after {
+[dir="rtl"] .horizontal-media-scroller > li:first-of-type figure::after {
         left: calc(var(--gap) * -1);
 }
 
-.horizontal-media-scroller > li:last-of-type figure::after {
+.horizontal-media-scroller > li:first-of-type figure::after {
         content: "";
         position: absolute;
 
@@ -87,6 +119,7 @@
 figure {
   display: grid;
   margin: 0;
+  max-width: var(--size);
 
   cursor: pointer;
   -webkit-user-select: none;
@@ -106,7 +139,7 @@ figure img {
     -o-object-fit: cover;
        object-fit: cover;
 
-    border-radius: 1ch;
+    border-radius: 5ch;
     overflow: hidden;
 
     background-image:
@@ -154,4 +187,8 @@ h3 {
         height: calc(var(--size) * 1.5)
   }
       }
+}
+
+li {
+position: relative;
 }

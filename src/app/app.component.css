@@ -10,4 +10,6 @@ dsr-route-card {
   height: 20dvh;
   width: 60dvw;
   justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
