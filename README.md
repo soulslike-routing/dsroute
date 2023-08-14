@@ -3,3 +3,4 @@ Angular app to plan a Dark Souls Remastered Playthrough. The goal of this projec
 
 Recently moved planning into issues if this seems empty ^^
 
+Check out the currently deployed version [here](https://0815sailsman.github.io/dsroute/)
