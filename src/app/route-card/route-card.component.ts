@@ -44,4 +44,17 @@ export class RouteCardComponent {
         return "error";
     }
   }
+
+  insertIndicator(action: PlayerAction): string {
+    switch (action.type) {
+      case ActionType.GOTO:
+        return "🏃‍♀️";
+      case ActionType.PICKUP:
+        return "🖐️";
+      case ActionType.KILL:
+        return "⚔️";
+      default:
+        return "error";
+    }
+  }
 }

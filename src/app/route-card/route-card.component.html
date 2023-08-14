@@ -2,6 +2,7 @@
   <h1>Route</h1>
   <ul class="horizontal-media-scroller">
     <li *ngFor="let playerAction of playerActions.reverse()">
+      <span class="indicator">{{insertIndicator(playerAction)}}</span>
       <a>
       <figure>
         <picture>

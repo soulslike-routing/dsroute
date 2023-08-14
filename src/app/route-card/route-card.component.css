@@ -16,6 +16,21 @@
   text-align: center;
 }
 
+.indicator {
+  position: absolute;
+  top: 25%;
+  left: -35%;
+  z-index: 25;
+  background: transparent;
+
+  /* horizontal flip for correct walking direction */
+  -moz-transform: scale(-2, 2);
+  -webkit-transform: scale(-2, 2);
+  -o-transform: scale(-2, 2);
+  -ms-transform: scale(-2, 2);
+  transform: scale(-2, 2);
+}
+
 * {
   --sm-space: 1rem;
   --md-space: 4rem;
@@ -124,7 +139,7 @@ figure img {
     -o-object-fit: cover;
        object-fit: cover;
 
-    border-radius: 1ch;
+    border-radius: 5ch;
     overflow: hidden;
 
     background-image:
@@ -172,4 +187,8 @@ h3 {
         height: calc(var(--size) * 1.5)
   }
       }
+}
+
+li {
+position: relative;
 }
