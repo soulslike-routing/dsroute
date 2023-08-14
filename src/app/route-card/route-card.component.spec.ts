@@ -104,6 +104,36 @@ describe('RouteCardComponent', () => {
     fixture.detectChanges();
     expect(fixture.debugElement.queryAll(By.css('figcaption'))[0].nativeElement.textContent).toEqual("my_epic_enemyname");
   });
+
+  it("displays correct indicator emoji", () => {
+     component.locations = {
+      "0": "my_epic_locationname",
+      "1": "my_second_location",
+      "2": "my_third_location"
+    };
+    component.playerActions = [{type: ActionType.GOTO, target: 1}];
+    fixture.detectChanges();
+    expect(fixture.debugElement.queryAll(By.css('span'))[0].nativeElement.textContent).toEqual("🏃‍♀️");
+
+    component.items = {
+      "0": "my_epic_itemname"
+    };
+    component.playerActions = [{type: ActionType.GOTO, target: 1}, {type: ActionType.PICKUP, target: 0}];
+    fixture.detectChanges();
+    expect(fixture.debugElement.queryAll(By.css('span'))[0].nativeElement.textContent).toEqual("🖐️");
+
+    component.enemies = {
+      "0": "my_epic_enemyname"
+    };
+    component.playerActions = [
+      {type: ActionType.GOTO, target: 1},
+      {type: ActionType.PICKUP, target: 0},
+      {type: ActionType.GOTO, target: 2},
+      {type: ActionType.KILL, target: 0},
+    ];
+    fixture.detectChanges();
+    expect(fixture.debugElement.queryAll(By.css('span'))[0].nativeElement.textContent).toEqual("⚔️");
+  });
 });
 
 @Injectable()
