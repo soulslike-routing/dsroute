@@ -1,7 +1,8 @@
 <div class="routecard">
   <h1>Route</h1>
   <ul class="horizontal-media-scroller">
-    <li *ngFor="let playerAction of playerActions">
+    <li id="anchor"></li>
+    <li *ngFor="let playerAction of playerActions.reverse()">
       <a>
       <figure>
         <picture>
@@ -13,3 +14,4 @@
     </li>
   </ul>
 </div>
+<span id='note'>Tip: Pin the route back to the right by quickly scrolling the whole thing to the right.</span>
