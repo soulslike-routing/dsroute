@@ -90,7 +90,7 @@ describe('RouteCardComponent', () => {
     };
     component.playerActions = [{type: ActionType.GOTO, target: 1}, {type: ActionType.PICKUP, target: 0}];
     fixture.detectChanges();
-    expect(fixture.debugElement.queryAll(By.css('figcaption'))[1].nativeElement.textContent).toEqual("my_epic_itemname");
+    expect(fixture.debugElement.queryAll(By.css('figcaption'))[0].nativeElement.textContent).toEqual("my_epic_itemname");
 
     component.enemies = {
       "0": "my_epic_enemyname"
@@ -102,7 +102,7 @@ describe('RouteCardComponent', () => {
       {type: ActionType.KILL, target: 0},
     ];
     fixture.detectChanges();
-    expect(fixture.debugElement.queryAll(By.css('figcaption'))[3].nativeElement.textContent).toEqual("my_epic_enemyname");
+    expect(fixture.debugElement.queryAll(By.css('figcaption'))[0].nativeElement.textContent).toEqual("my_epic_enemyname");
   });
 });
 
