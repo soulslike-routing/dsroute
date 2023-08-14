@@ -192,3 +192,29 @@ h3 {
 li {
 position: relative;
 }
+
+#modal {
+  position:absolute;
+  height: 25dvh;
+  width: 25dvw;
+  color: white;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#modal::backdrop {
+  background-color: rgba(255, 0, 110, 0.25);
+}
+
+#modalContainer {
+  height: 100%;
+  display:flex;
+  flex-direction:column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+#modalContainer button {
+  color: white;
+}

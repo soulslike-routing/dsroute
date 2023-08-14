@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef} from '@angular/core';
 import {RouteService} from "../route.service";
 import {PlayerAction} from "../player-action.interface";
 import {ActionType} from "../action-type.interface";
@@ -12,14 +12,21 @@ import enemies from '../../assets/enemies.json'
   styleUrls: ['./route-card.component.css']
 })
 export class RouteCardComponent {
-
   actionTypeEnumReference = ActionType;
   playerActions: PlayerAction[] = this.routeService.getRoute();
   locations: any = locations;
   items: any = items;
   enemies: any = enemies;
+  modal: HTMLDialogElement;
+  selectedAction: PlayerAction = {type: ActionType.GOTO, target: 1};
 
-  constructor(private routeService: RouteService, private ref: ChangeDetectorRef) {}
+  constructor(private routeService: RouteService, private ref: ChangeDetectorRef, private elRef:ElementRef) {
+   this.modal= this.elRef.nativeElement.querySelector('#modal');
+  }
+
+  ngAfterViewInit() {
+    this.modal= this.elRef.nativeElement.querySelector('#modal');
+  }
 
   ngOnInit() {
     this.playerActions = this.routeService.getRoute();
@@ -56,5 +63,15 @@ export class RouteCardComponent {
       default:
         return "error";
     }
+  }
+
+  openModal(action: PlayerAction): void {
+    this.selectedAction = action;
+    this.modal.showModal();
+  }
+
+  removeAction(action: PlayerAction): void {
+    console.log(action);
+    this.modal.close();
   }
 }

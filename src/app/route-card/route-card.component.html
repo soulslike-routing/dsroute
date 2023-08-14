@@ -1,7 +1,17 @@
+<dialog id="modal">
+  <div id="modalContainer">
+  <h3>Greetings, one and all!</h3>
+  <span>Editing <em>{{actionTypeEnumReference[this.selectedAction.type]}} {{lookupName(this.selectedAction)}}</em></span>
+  <form>
+    <button value="remove" id="removeBtn" onclick="event.preventDefault();" (click)="removeAction(this.selectedAction);">Remove action</button><br>
+    <button value="cancel" id="cancelBtn" formmethod="dialog">Cancel edit</button>
+  </form>
+  </div>
+</dialog>
 <div class="routecard">
   <h1>Route</h1>
   <ul class="horizontal-media-scroller">
-    <li *ngFor="let playerAction of playerActions.reverse()">
+    <li *ngFor="let playerAction of playerActions.reverse()" (click)="openModal(playerAction)">
       <span class="indicator">{{insertIndicator(playerAction)}}</span>
       <a>
       <figure>

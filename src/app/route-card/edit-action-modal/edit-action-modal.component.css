@@ -1,0 +1,7 @@
+* {
+color: white;
+}
+
+dialog::backdrop {
+  background-color: darkorange;
+}
