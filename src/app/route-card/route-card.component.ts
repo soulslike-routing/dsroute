@@ -71,7 +71,8 @@ export class RouteCardComponent {
   }
 
   removeAction(action: PlayerAction): void {
-    console.log(action);
+    this.routeService.route = this.routeService.getRoute().slice(0, this.routeService.getRoute().indexOf(action));
+    this.playerActions = this.routeService.getRoute();
     this.modal.close();
   }
 }
