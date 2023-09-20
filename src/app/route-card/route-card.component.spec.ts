@@ -24,7 +24,7 @@ describe('RouteCardComponent', () => {
       providers: [
         RouteCardComponent,
         ChangeDetectorRef,
-        { provide: RouteService, useClass: MockRouteService }
+        { provide: RouteService, useClass: MockRouteService },
       ]
     })
     .compileComponents();
@@ -38,23 +38,34 @@ describe('RouteCardComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('creates', () => {
     expect(component).toBeTruthy();
   });
 
-  it("should start without any list items", () => {
+  it("starts without any list items", () => {
     expect(component.playerActions.length).toEqual(0);
     expect(fixture.debugElement.queryAll(By.css('li')).length).toEqual(0);
   });
 
-  it("should add 1 list item per entry in route", () => {
-    component.playerActions = [{type: ActionType.GOTO, target: 1}];
+  it("adds 1 list item per entry in route", () => {
+    component.playerActions = [
+      {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: []}
+    ];
     fixture.detectChanges();
     expect(fixture.debugElement.queryAll(By.css('li')).length).toEqual(1);
-    component.playerActions = [{type: ActionType.GOTO, target: 1}, {type: ActionType.GOTO, target: 0}];
+
+    component.playerActions = [
+      {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: []},
+      {type: ActionType.GOTO, target: 0, dependenciesRemovedFrom: []}
+    ];
     fixture.detectChanges();
     expect(fixture.debugElement.queryAll(By.css('li')).length).toEqual(2);
-    component.playerActions = [{type: ActionType.GOTO, target: 1}, {type: ActionType.GOTO, target: 2}, {type: ActionType.GOTO, target: 1}];
+
+    component.playerActions = [
+      {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: []},
+      {type: ActionType.GOTO, target: 2, dependenciesRemovedFrom: []},
+      {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: []}
+    ];
     fixture.detectChanges();
     expect(fixture.debugElement.queryAll(By.css('li')).length).toEqual(3);
   });
@@ -64,15 +75,15 @@ describe('RouteCardComponent', () => {
       "0": "location0",
       "1": "location1"
     };
-    expect(component.lookupName({type: ActionType.GOTO, target: 1})).toEqual("location1");
+    expect(component.lookupName({type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: []})).toEqual("location1");
     component.items = {
       "0": "item0",
     };
-    expect(component.lookupName({type: ActionType.PICKUP, target: 0})).toEqual("item0");
+    expect(component.lookupName({type: ActionType.PICKUP, target: 0, dependenciesRemovedFrom: []})).toEqual("item0");
     component.enemies = {
       "0": "enemy0",
     };
-    expect(component.lookupName({type: ActionType.KILL, target: 0})).toEqual("enemy0");
+    expect(component.lookupName({type: ActionType.KILL, target: 0, dependenciesRemovedFrom: []})).toEqual("enemy0");
   });
 
   it("displays correct action name as figcaption using lookup", () => {
@@ -81,14 +92,19 @@ describe('RouteCardComponent', () => {
       "1": "my_second_location",
       "2": "my_third_location"
     };
-    component.playerActions = [{type: ActionType.GOTO, target: 1}];
+    component.playerActions = [
+      {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: []}
+    ];
     fixture.detectChanges();
     expect(fixture.debugElement.queryAll(By.css('figcaption'))[0].nativeElement.textContent).toEqual("my_second_location");
 
     component.items = {
       "0": "my_epic_itemname"
     };
-    component.playerActions = [{type: ActionType.GOTO, target: 1}, {type: ActionType.PICKUP, target: 0}];
+    component.playerActions = [
+      {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: []},
+      {type: ActionType.PICKUP, target: 0, dependenciesRemovedFrom: []}
+    ];
     fixture.detectChanges();
     expect(fixture.debugElement.queryAll(By.css('figcaption'))[0].nativeElement.textContent).toEqual("my_epic_itemname");
 
@@ -96,10 +112,10 @@ describe('RouteCardComponent', () => {
       "0": "my_epic_enemyname"
     };
     component.playerActions = [
-      {type: ActionType.GOTO, target: 1},
-      {type: ActionType.PICKUP, target: 0},
-      {type: ActionType.GOTO, target: 2},
-      {type: ActionType.KILL, target: 0},
+      {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: []},
+      {type: ActionType.PICKUP, target: 0, dependenciesRemovedFrom: []},
+      {type: ActionType.GOTO, target: 2, dependenciesRemovedFrom: []},
+      {type: ActionType.KILL, target: 0, dependenciesRemovedFrom: []},
     ];
     fixture.detectChanges();
     expect(fixture.debugElement.queryAll(By.css('figcaption'))[0].nativeElement.textContent).toEqual("my_epic_enemyname");
@@ -111,28 +127,33 @@ describe('RouteCardComponent', () => {
       "1": "my_second_location",
       "2": "my_third_location"
     };
-    component.playerActions = [{type: ActionType.GOTO, target: 1}];
+    component.playerActions = [
+      {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: []}
+    ];
     fixture.detectChanges();
-    expect(fixture.debugElement.queryAll(By.css('span'))[0].nativeElement.textContent).toEqual("🏃‍♀️");
+    expect(fixture.debugElement.queryAll(By.css('.indicator'))[0].nativeElement.textContent).toEqual("🏃‍♀️");
 
     component.items = {
       "0": "my_epic_itemname"
     };
-    component.playerActions = [{type: ActionType.GOTO, target: 1}, {type: ActionType.PICKUP, target: 0}];
+    component.playerActions = [
+      {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: []},
+      {type: ActionType.PICKUP, target: 0, dependenciesRemovedFrom: []}
+    ];
     fixture.detectChanges();
-    expect(fixture.debugElement.queryAll(By.css('span'))[0].nativeElement.textContent).toEqual("🖐️");
+    expect(fixture.debugElement.queryAll(By.css('.indicator'))[0].nativeElement.textContent).toEqual("🖐️");
 
     component.enemies = {
       "0": "my_epic_enemyname"
     };
     component.playerActions = [
-      {type: ActionType.GOTO, target: 1},
-      {type: ActionType.PICKUP, target: 0},
-      {type: ActionType.GOTO, target: 2},
-      {type: ActionType.KILL, target: 0},
+      {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: []},
+      {type: ActionType.PICKUP, target: 0, dependenciesRemovedFrom: []},
+      {type: ActionType.GOTO, target: 2, dependenciesRemovedFrom: []},
+      {type: ActionType.KILL, target: 0, dependenciesRemovedFrom: []},
     ];
     fixture.detectChanges();
-    expect(fixture.debugElement.queryAll(By.css('span'))[0].nativeElement.textContent).toEqual("⚔️");
+    expect(fixture.debugElement.queryAll(By.css('.indicator'))[0].nativeElement.textContent).toEqual("⚔️");
   });
 });
 

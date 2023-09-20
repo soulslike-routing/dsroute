@@ -79,24 +79,37 @@ export class RouteService {
     return possible;
   }
 
-  performUnlocksBy(key: "locations" | "enemies" | "items", srcObjID:number, areaIDs: number[]): void {
+  // TODO Write tests for unlocking in general
+  performUnlocksBy(key: "locations" | "enemies" | "items", srcObjID:number, areaIDs: number[]): number[] {
+    let areasWhereDependenciesGotModified: number[] = [];
     for (const ID of areaIDs) {
+
+      // This line removes the srcObject from the area's dependencies
+      // TODO Refactor this into external method and test it properly
+      const originalDependencies: number[] = [...this.getLocationAtIndex(ID).dependencies[key]];
       this.getLocationAtIndex(ID).dependencies[key] = this.getLocationAtIndex(ID).dependencies[key].filter(obj => obj !== srcObjID);
+      areasWhereDependenciesGotModified = originalDependencies.filter((element) => !this.getLocationAtIndex(ID).dependencies[key].includes(element));
+
       if (!this.getLocationAtIndex(ID).dependencies.hard_locked) {
-        this.unlockAll(ID);
+        this.unlockAllDependencies(ID);
       }
     }
+    return areasWhereDependenciesGotModified;
   }
 
-  unlockAll(locationToBeUnlockedID: number):void {
-    this.getLocationAtIndex(locationToBeUnlockedID).dependencies = {"locations":[],"enemies":[],"items":[],"hard_locked":false};
+  // Most locations are not hard locked, so that any of the possibly multiple dependencies might be used to unlock the location
+  // This method can then be used to remove all further dependecies
+  unlockAllDependencies(locationToBeUnlockedID: number):void {
+    const loc: Location = this.getLocationAtIndex(locationToBeUnlockedID);
+    const isHardLocked = loc.dependencies.hard_locked;
+    loc.dependencies = {"locations":[],"enemies":[],"items":[],"hard_locked":isHardLocked};
   }
 
   moveTo(ID: number): void {
     if (this.possibleLocations().find(e => e.id == ID)) {
-      this.route.push({type: ActionType.GOTO, target: ID});
+      const areasWhereDependenciesGotModified:number[] = this.performUnlocksBy("locations", ID, this.currentLocation.unlocks);
+      this.route.push({type: ActionType.GOTO, target: ID, dependenciesRemovedFrom: areasWhereDependenciesGotModified});
       this.currentLocation = this.getLocationAtIndex(ID);
-      this.performUnlocksBy("locations", ID, this.currentLocation.unlocks);
     } else {
       console.log("Error, tried to move to invalid location");
     }
@@ -107,9 +120,8 @@ export class RouteService {
     if (typeof theItem === undefined || theItem == undefined) {
       console.log('Error, item with ID '+ ID + ' is undefined!');
     } else {
-      this.route.push({type: ActionType.PICKUP, target: ID});
-      // @ts-ignore
-      this.performUnlocksBy("items", ID, theItem.unlocks);
+      const areasWhereDependenciesGotModified:number[] = this.performUnlocksBy("items", ID, theItem.unlocks);
+      this.route.push({type: ActionType.PICKUP, target: ID, dependenciesRemovedFrom: areasWhereDependenciesGotModified});
       // @ts-ignore
       theItem.collected = true;
     }
@@ -120,12 +132,16 @@ export class RouteService {
     if (typeof enemy === undefined || enemy == undefined) {
       console.log('Error, enemy with ID '+ ID + ' is undefined!');
     } else {
-      this.route.push({type: ActionType.KILL, target: ID});
-      // @ts-ignore
-      this.performUnlocksBy("enemies", ID, enemy.unlocks);
+      const areasWhereDependenciesGotModified:number[] = this.performUnlocksBy("enemies", ID, enemy.unlocks);
+      this.route.push({type: ActionType.KILL, target: ID, dependenciesRemovedFrom: areasWhereDependenciesGotModified});
       // @ts-ignore
       enemy.killed = true;
     }
+  }
+
+  undoAction(action: PlayerAction): void {
+    // TODO extend placerAction interface to store info if it actually unlocked anything
+    // and if yes, what
   }
 
   hasDependencies(loc: Location) {

@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, ElementRef} from '@angular/core';
+import {ChangeDetectorRef, Component, ViewChild, ElementRef} from '@angular/core';
 import {RouteService} from "../route.service";
 import {PlayerAction} from "../player-action.interface";
 import {ActionType} from "../action-type.interface";
@@ -17,15 +17,14 @@ export class RouteCardComponent {
   locations: any = locations;
   items: any = items;
   enemies: any = enemies;
-  modal: HTMLDialogElement;
-  selectedAction: PlayerAction = {type: ActionType.GOTO, target: 1};
+  selectedAction: PlayerAction = {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: []};
+  //@ts-ignore
+  @ViewChild('modal') modal: ElementRef;
 
-  constructor(private routeService: RouteService, private ref: ChangeDetectorRef, private elRef:ElementRef) {
-   this.modal= this.elRef.nativeElement.querySelector('#modal');
+  constructor(private routeService: RouteService, private ref: ChangeDetectorRef) {
   }
 
   ngAfterViewInit() {
-    this.modal= this.elRef.nativeElement.querySelector('#modal');
   }
 
   ngOnInit() {
@@ -67,12 +66,12 @@ export class RouteCardComponent {
 
   openModal(action: PlayerAction): void {
     this.selectedAction = action;
-    this.modal.showModal();
+    this.modal.nativeElement.showModal();
   }
 
   removeAction(action: PlayerAction): void {
     this.routeService.route = this.routeService.getRoute().slice(0, this.routeService.getRoute().indexOf(action));
     this.playerActions = this.routeService.getRoute();
-    this.modal.close();
+    this.modal.nativeElement.close();
   }
 }
