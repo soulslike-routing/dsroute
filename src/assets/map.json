@@ -16,7 +16,7 @@
     "id": 1,
     "name": "Firelink",
     "connections": [2, 3, 6, 12, 13],
-    "dependencies": {"locations": [0], "enemies": [], "items": [], "hard_locked": false},
+    "dependencies": {"locations": [], "enemies": [0], "items": [], "hard_locked": false},
     "unlocks": [2, 12],
     "items": [],
     "enemies": []
