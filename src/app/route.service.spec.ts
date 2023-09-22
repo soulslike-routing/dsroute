@@ -11,30 +11,30 @@ describe('RouteService', () => {
     service = TestBed.inject(RouteService);
   });
 
-  it('should be created', () => {
+  it('creates', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should load the map from json file', () => {
+  it('loads the map from json file', () => {
     expect(service.getMap()).toEqual(map["locations"]);
   });
 
-  it('should start with empty route', () => {
+  it('starts with empty route', () => {
     expect(service.getRoute().length).toBe(0);
   });
 
-  it('should start at location Northern Undead Asylum', () => {
+  it('starts at location Northern Undead Asylum', () => {
     expect(service.getCurrentLocation()).toBe(map["locations"][0]);
     expect(service.getCurrentLocation().name).toEqual("Northern Undead Asylum");
   });
 
-  it('should return the correct location at index', () => {
+  it('returns the correct location at index', () => {
     expect(service.getLocationAtIndex(4)).toBe(map["locations"][4]);
     expect(service.getLocationAtIndex(10)).toBe(map["locations"][10]);
     expect(service.getLocationAtIndex(12)).toBe(map["locations"][12]);
   });
 
-  it('should correctly store movements', () => {
+  it('correctly stores movements', () => {
    service.map = [{
       "id": 0,
       "name": "my_epic_locationname",
@@ -139,5 +139,183 @@ describe('RouteService', () => {
       {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: []},
       {type: ActionType.GOTO, target: 2, dependenciesRemovedFrom: []}
     ]);
+  });
+
+  describe('unlocking', () => {
+    it('accesses unlocked objects', () => {
+      const loc1 = {
+        "id": 0,
+        "name": "my_epic_locationname",
+        "connections": [1],
+        "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
+        "unlocks": [],
+        "items": [],
+        "enemies": []
+      };
+      const loc2 = {
+        "id": 1,
+        "name": "my_second_location",
+        "connections": [0],
+        "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
+        "unlocks": [],
+        "items": [],
+        "enemies": []
+      }
+      service.map = [loc1, loc2];
+      service.currentLocation = loc1;
+
+      service.moveTo(1);
+      expect(service.getCurrentLocation()).toEqual(loc2);
+    });
+
+    it('refuses to access locked objects', () => {
+      const loc1 = {
+        "id": 0,
+        "name": "my_epic_locationname",
+        "connections": [1],
+        "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
+        "unlocks": [],
+        "items": [],
+        "enemies": [
+          {"id": 0, "name": "Asylum Demon", "unlocks": [1], "killed": false, "respawns": false},
+        ]
+      };
+      const loc2 = {
+        "id": 1,
+        "name": "my_second_location",
+        "connections": [0],
+        "dependencies": {"locations": [], "enemies": [0], "items": [], "hard_locked": false},
+        "unlocks": [],
+        "items": [],
+        "enemies": []
+      }
+      service.map = [loc1, loc2];
+      service.currentLocation = loc1;
+
+      service.moveTo(1);
+      expect(service.getCurrentLocation()).toEqual(loc1);
+    });
+
+    it('correctly unlocks objects once their dependency has been resolved', () => {
+      const loc1 = {
+        "id": 0,
+        "name": "my_epic_locationname",
+        "connections": [1],
+        "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
+        "unlocks": [],
+        "items": [],
+        "enemies": [
+          {"id": 0, "name": "Asylum Demon", "unlocks": [1], "killed": false, "respawns": false},
+        ]
+      };
+      const loc2 = {
+        "id": 1,
+        "name": "my_second_location",
+        "connections": [0],
+        "dependencies": {"locations": [], "enemies": [0], "items": [], "hard_locked": false},
+        "unlocks": [],
+        "items": [],
+        "enemies": []
+      }
+      service.map = [loc1, loc2];
+      service.currentLocation = loc1;
+
+      service.kill(0)
+      service.moveTo(1);
+      expect(service.getCurrentLocation()).toEqual(loc2);
+    });
+
+    it('correctly unlocks softlocked objects when any of their dependencies get resolved', () => {
+      const loc1 = {
+        "id": 0,
+        "name": "my_epic_locationname",
+        "connections": [1],
+        "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
+        "unlocks": [],
+        "items": [],
+        "enemies": [
+          {"id": 0, "name": "Asylum Demon", "unlocks": [1], "killed": false, "respawns": false},
+          {"id": 1, "name": "Asylum Demon but epic", "unlocks": [1], "killed": false, "respawns": false},
+        ]
+      };
+      const loc2 = {
+        "id": 1,
+        "name": "my_second_location",
+        "connections": [0],
+        "dependencies": {"locations": [], "enemies": [0, 1], "items": [], "hard_locked": false},
+        "unlocks": [],
+        "items": [],
+        "enemies": []
+      }
+      service.map = [loc1, loc2];
+      service.currentLocation = loc1;
+
+      service.kill(1)
+      service.moveTo(1);
+      expect(service.getCurrentLocation()).toEqual(loc2);
+    });
+
+    it('does not unlock hardlocked objects when only part of their dependencies get resolved', () => {
+      const loc1 = {
+        "id": 0,
+        "name": "my_epic_locationname",
+        "connections": [1],
+        "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
+        "unlocks": [],
+        "items": [],
+        "enemies": [
+          {"id": 0, "name": "Asylum Demon", "unlocks": [1], "killed": false, "respawns": false},
+          {"id": 1, "name": "Asylum Demon but epic", "unlocks": [1], "killed": false, "respawns": false},
+        ]
+      };
+      const loc2 = {
+        "id": 1,
+        "name": "my_second_location",
+        "connections": [0],
+        "dependencies": {"locations": [], "enemies": [0, 1], "items": [], "hard_locked": true},
+        "unlocks": [],
+        "items": [],
+        "enemies": []
+      }
+      service.map = [loc1, loc2];
+      service.currentLocation = loc1;
+
+      service.kill(1)
+      service.moveTo(1);
+      expect(service.getCurrentLocation()).toEqual(loc1);
+    });
+
+    it('unlocks hardlocked ojects if all their dependencies are resolved', () => {
+      const loc1 = {
+        "id": 0,
+        "name": "my_epic_locationname",
+        "connections": [1],
+        "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
+        "unlocks": [],
+        "items": [],
+        "enemies": [
+          {"id": 0, "name": "Asylum Demon", "unlocks": [1], "killed": false, "respawns": false},
+          {"id": 1, "name": "Asylum Demon but epic", "unlocks": [1], "killed": false, "respawns": false},
+        ]
+      };
+      const loc2 = {
+        "id": 1,
+        "name": "my_second_location",
+        "connections": [0],
+        "dependencies": {"locations": [], "enemies": [0, 1], "items": [], "hard_locked": true},
+        "unlocks": [],
+        "items": [],
+        "enemies": []
+      }
+      service.map = [loc1, loc2];
+      service.currentLocation = loc1;
+
+      service.kill(0)
+      service.kill(1)
+      service.moveTo(1);
+      expect(service.getCurrentLocation()).toEqual(loc2);
+    });
+
+    // TODO test areaswheredependenciesgotmodified
   });
 });
