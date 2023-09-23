@@ -3,6 +3,7 @@ import map from '../assets/map.json'
 import { RouteService } from './route.service';
 import {ActionType} from "./action-type.interface";
 import MapFactory from "./utils/mockMaps";
+import {last} from "./utils/arrayHelpers";
 
 describe('RouteService', () => {
   let service: RouteService;
@@ -116,50 +117,50 @@ describe('RouteService', () => {
 
     describe('access', () => {
       it('accesses unlocked objects', () => {
-        const [, loc2] = service.map = mapFactory.twoEmptyLocations();
+        const [, loc1] = service.map = mapFactory.twoEmptyLocations();
         service.currentLocation = service.getLocationAtIndex(0);
         service.moveTo(1);
-        expect(service.getCurrentLocation()).toEqual(loc2);
+        expect(service.getCurrentLocation()).toEqual(loc1);
       });
 
       it('refuses to access locked objects', () => {
-        const [loc1,] = service.map = mapFactory.unlockByEnemy();
+        const [loc0,] = service.map = mapFactory.unlockByEnemy();
         service.currentLocation = service.getLocationAtIndex(0);
         service.moveTo(1);
-        expect(service.getCurrentLocation()).toEqual(loc1);
+        expect(service.getCurrentLocation()).toEqual(loc0);
       });
 
       it('correctly unlocks objects once their dependency has been resolved', () => {
-        const [, loc2] = service.map = mapFactory.unlockByEnemy();
+        const [, loc1] = service.map = mapFactory.unlockByEnemy();
         service.currentLocation = service.getLocationAtIndex(0);
         service.kill(0)
         service.moveTo(1);
-        expect(service.getCurrentLocation()).toEqual(loc2);
+        expect(service.getCurrentLocation()).toEqual(loc1);
       });
 
       it('correctly unlocks softlocked objects when any of their dependencies get resolved', () => {
-        const [, loc2] = service.map = mapFactory.stackingSoftlocksEnemies();
-        service.currentLocation = service.getLocationAtIndex(0);
-        service.kill(1)
-        service.moveTo(1);
-        expect(service.getCurrentLocation()).toEqual(loc2);
-      });
-
-      it('does not unlock hardlocked objects when only part of their dependencies get resolved', () => {
-        const [loc1,] = service.map = mapFactory.hardLockedLocationByEnemies();
+        const [, loc1] = service.map = mapFactory.stackingSoftlocksEnemies();
         service.currentLocation = service.getLocationAtIndex(0);
         service.kill(1)
         service.moveTo(1);
         expect(service.getCurrentLocation()).toEqual(loc1);
       });
 
+      it('does not unlock hardlocked objects when only part of their dependencies get resolved', () => {
+        const [loc0,] = service.map = mapFactory.hardLockedLocationByEnemies();
+        service.currentLocation = service.getLocationAtIndex(0);
+        service.kill(1)
+        service.moveTo(1);
+        expect(service.getCurrentLocation()).toEqual(loc0);
+      });
+
       it('unlocks hardlocked objects if all their dependencies are resolved', () => {
-        const [, loc2] = service.map = mapFactory.hardLockedLocationByEnemies();
+        const [, loc1] = service.map = mapFactory.hardLockedLocationByEnemies();
         service.currentLocation = service.getLocationAtIndex(0);
         service.kill(0)
         service.kill(1)
         service.moveTo(1);
-        expect(service.getCurrentLocation()).toEqual(loc2);
+        expect(service.getCurrentLocation()).toEqual(loc1);
       });
     });
 
@@ -302,5 +303,180 @@ describe('RouteService', () => {
         ]);
       });
     });
+  });
+
+  describe('undo', () => {
+    it('undoes simple movement without unlocks or dependencies', () => {
+      const [loc0, loc1] = service.map = mapFactory.twoEmptyLocations();
+      service.currentLocation = service.getLocationAtIndex(0);
+
+      service.moveTo(1);
+      expect(service.getCurrentLocation()).toEqual(loc1);
+      expect(service.getRoute().length).toBe(1);
+      expect(service.getRoute()).toEqual([
+        {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: []}
+      ]);
+
+      service.undoAction(last(service.getRoute()));
+      expect(service.getCurrentLocation()).toEqual(loc0);
+      expect(service.getRoute().length).toBe(0);
+      expect(service.getRoute()).toEqual([]);
+    });
+
+    it('undoes simple collection without unlocks or dependencies', () => {
+      service.map = mapFactory.basicItem();
+      service.currentLocation = service.getLocationAtIndex(0);
+
+      service.collect(0);
+      expect(service.getCurrentLocation().items[0].collected).toBeTrue();
+      expect(service.getRoute().length).toBe(1);
+      expect(service.getRoute()).toEqual([
+        {type: ActionType.PICKUP, target: 0, dependenciesRemovedFrom: []}
+      ]);
+
+      service.undoAction(last(service.getRoute()));
+      expect(service.getCurrentLocation().items[0].collected).toBeFalse();
+      expect(service.getRoute().length).toBe(0);
+      expect(service.getRoute()).toEqual([]);
+    });
+
+    it('undoes simple kill without unlocks or dependencies', () => {
+      service.map = mapFactory.basicEnemy();
+      service.currentLocation = service.getLocationAtIndex(0);
+
+      service.kill(0);
+      expect(service.getCurrentLocation().enemies[0].killed).toBeTrue();
+      expect(service.getRoute().length).toBe(1);
+      expect(service.getRoute()).toEqual([
+        {type: ActionType.KILL, target: 0, dependenciesRemovedFrom: []}
+      ]);
+
+      service.undoAction(last(service.getRoute()));
+      expect(service.getCurrentLocation().enemies[0].killed).toBeFalse();
+      expect(service.getRoute().length).toBe(0);
+      expect(service.getRoute()).toEqual([]);
+    });
+
+    it('undoes movement that unlocked area and re-locks that area', () => {
+      const [loc0, loc1,] = service.map = mapFactory.unlockByMovement();
+      service.currentLocation = service.getLocationAtIndex(0);
+
+      service.moveTo(1);
+      expect(service.getCurrentLocation()).toEqual(loc1);
+      expect(service.getLocationAtIndex(2).dependencies.locations.length).toBe(0);
+      expect(service.getLocationAtIndex(2).dependencies.locations).toEqual([]);
+      expect(service.getRoute().length).toBe(1);
+      expect(service.getRoute()).toEqual([
+        {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: [2]}
+      ]);
+
+      service.undoAction(last(service.getRoute()));
+      expect(service.getCurrentLocation()).toEqual(loc0);
+      expect(service.getLocationAtIndex(2).dependencies.locations.length).toBe(1);
+      expect(service.getLocationAtIndex(2).dependencies.locations).toEqual([1]);
+      expect(service.getRoute().length).toBe(0);
+      expect(service.getRoute()).toEqual([]);
+    });
+
+    it('undoes collection that unlocked area and re-locks that area', () => {
+      service.map = mapFactory.unlockByItem();
+      service.currentLocation = service.getLocationAtIndex(0);
+
+      service.collect(0);
+      expect(service.getCurrentLocation().items[0].collected).toBeTrue();
+      expect(service.getLocationAtIndex(1).dependencies.items.length).toBe(0);
+      expect(service.getLocationAtIndex(1).dependencies.items).toEqual([]);
+      expect(service.getRoute().length).toBe(1);
+      expect(service.getRoute()).toEqual([
+        {type: ActionType.PICKUP, target: 0, dependenciesRemovedFrom: [1]}
+      ]);
+
+      service.undoAction(last(service.getRoute()));
+      expect(service.getCurrentLocation().items[0].collected).toBeFalse();
+      expect(service.getLocationAtIndex(1).dependencies.items.length).toBe(1);
+      expect(service.getLocationAtIndex(1).dependencies.items).toEqual([0]);
+      expect(service.getRoute().length).toBe(0);
+      expect(service.getRoute()).toEqual([]);
+    });
+
+    it('undoes kill that unlocked area and re-locks that area', () => {
+      service.map = mapFactory.unlockByEnemy();
+      service.currentLocation = service.getLocationAtIndex(0);
+
+      service.kill(0);
+      expect(service.getCurrentLocation().enemies[0].killed).toBeTrue();
+      expect(service.getLocationAtIndex(1).dependencies.enemies.length).toBe(0);
+      expect(service.getLocationAtIndex(1).dependencies.enemies).toEqual([]);
+      expect(service.getRoute().length).toBe(1);
+      expect(service.getRoute()).toEqual([
+        {type: ActionType.KILL, target: 0, dependenciesRemovedFrom: [1]}
+      ]);
+
+      service.undoAction(last(service.getRoute()));
+      expect(service.getCurrentLocation().enemies[0].killed).toBeFalse();
+      expect(service.getLocationAtIndex(1).dependencies.enemies.length).toBe(1);
+      expect(service.getLocationAtIndex(1).dependencies.enemies).toEqual([0]);
+      expect(service.getRoute().length).toBe(0);
+      expect(service.getRoute()).toEqual([]);
+    });
+
+    it('undoes repeated unlocking movement without re-locking', () => {
+      const [loc0, loc1,] = service.map = mapFactory.unlockByMovement();
+      service.currentLocation = service.getLocationAtIndex(0);
+
+      service.moveTo(1);
+      service.moveTo(0);
+      service.moveTo(1);
+      expect(service.getCurrentLocation()).toEqual(loc1);
+      expect(service.getLocationAtIndex(2).dependencies.locations.length).toBe(0);
+      expect(service.getLocationAtIndex(2).dependencies.locations).toEqual([]);
+      expect(service.getRoute().length).toBe(3);
+      expect(service.getRoute()).toEqual([
+        {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: [2]},
+        {type: ActionType.GOTO, target: 0, dependenciesRemovedFrom: []},
+        {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: []},
+      ]);
+
+      service.undoAction(last(service.getRoute()));
+      expect(service.getCurrentLocation()).toEqual(loc0);
+      expect(service.getLocationAtIndex(2).dependencies.locations.length).toBe(0);
+      expect(service.getLocationAtIndex(2).dependencies.locations).toEqual([]);
+      expect(service.getRoute().length).toBe(2);
+      expect(service.getRoute()).toEqual([
+        {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: [2]},
+        {type: ActionType.GOTO, target: 0, dependenciesRemovedFrom: []},
+      ]);
+    });
+
+    /* Clarify if this is even possible. Because, that would mean there are respawning items / enemies that
+      unlock something the first time they are interacted with...
+    it('undoes repeated unlocking collection without re-locking', () => {});
+
+    it('undoes repeated unlocking kill without re-locking', () => {});
+     */
+
+    it('undoes repeated unlocking movement multiple times, re-locking', () => {
+      const [loc0,,] = service.map = mapFactory.unlockByMovement();
+      service.currentLocation = service.getLocationAtIndex(0);
+
+      service.moveTo(1);
+      service.moveTo(0);
+      service.moveTo(1);
+
+      service.undoAction(last(service.getRoute()));
+      service.undoAction(last(service.getRoute()));
+      service.undoAction(last(service.getRoute()));
+      expect(service.getCurrentLocation()).toEqual(loc0);
+      expect(service.getLocationAtIndex(2).dependencies.locations.length).toBe(1);
+      expect(service.getLocationAtIndex(2).dependencies.locations).toEqual([1]);
+      expect(service.getRoute().length).toBe(0);
+      expect(service.getRoute()).toEqual([]);
+    });
+
+    /* Same as above
+    it('undoes repeated unlocking collection multiple times, re-locking', () => {});
+
+    it('undoes repeated unlocking kill multiple times, re-locking', () => {});
+    */
   });
 });

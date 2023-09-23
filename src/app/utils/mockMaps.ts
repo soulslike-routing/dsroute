@@ -4,6 +4,57 @@ import { Location } from "../location.interface";
 class MapFactory {
   constructor() {}
 
+  twoEmptyLocations(): Location[] {
+    return [{
+      "id": 0,
+      "name": "location0",
+      "connections": [1],
+      "dependencies": { "locations": [], "enemies": [], "items": [], "hard_locked": false },
+      "unlocks": [],
+      "items": [],
+      "enemies": []
+    },
+      {
+        "id": 1,
+        "name": "location1",
+        "connections": [0],
+        "dependencies": { "locations": [], "enemies": [], "items": [], "hard_locked": false },
+        "unlocks": [],
+        "items": [],
+        "enemies": []
+      }];
+  }
+
+  threeEmptyLocations(): Location[] {
+    return [{
+      "id": 0,
+      "name": "location0",
+      "connections": [1],
+      "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
+      "unlocks": [],
+      "items": [],
+      "enemies": []
+    },
+      {
+        "id": 1,
+        "name": "location1",
+        "connections": [0, 2],
+        "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
+        "unlocks": [],
+        "items": [],
+        "enemies": []
+      },
+      {
+        "id": 2,
+        "name": "location2",
+        "connections": [1],
+        "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
+        "unlocks": [],
+        "items": [],
+        "enemies": []
+      }];
+  }
+
   basicItem(): Location[] {
     return [{
       "id": 0,
@@ -192,57 +243,6 @@ class MapFactory {
         "unlocks": [],
         "items": [],
         "enemies": []
-      }];
-  }
-
-  twoEmptyLocations(): Location[] {
-    return [{
-      "id": 0,
-      "name": "location0",
-      "connections": [1],
-      "dependencies": { "locations": [], "enemies": [], "items": [], "hard_locked": false },
-      "unlocks": [],
-      "items": [],
-      "enemies": []
-    },
-    {
-      "id": 1,
-      "name": "location1",
-      "connections": [0],
-      "dependencies": { "locations": [], "enemies": [], "items": [], "hard_locked": false },
-      "unlocks": [],
-      "items": [],
-      "enemies": []
-    }];
-  }
-
-  threeEmptyLocations(): Location[] {
-    return [{
-      "id": 0,
-      "name": "location0",
-      "connections": [1],
-      "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
-      "unlocks": [],
-      "items": [],
-      "enemies": []
-    },
-    {
-      "id": 1,
-      "name": "location1",
-      "connections": [0, 2],
-      "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
-      "unlocks": [],
-      "items": [],
-      "enemies": []
-    },
-    {
-      "id": 2,
-      "name": "location2",
-      "connections": [1],
-      "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
-      "unlocks": [],
-      "items": [],
-      "enemies": []
       }];
   }
 
