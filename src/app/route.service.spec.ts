@@ -37,10 +37,9 @@ describe('RouteService', () => {
     expect(service.getLocationAtIndex(12)).toBe(map["locations"][12]);
   });
 
-  // TODO write more route tests
   describe('route', () => {
     it('correctly stores movements in route', () => {
-      const [loc1, loc2, loc3] = service.map = mapFactory.threeEmptyLocations();
+      service.map = mapFactory.threeEmptyLocations();
       service.currentLocation = service.getLocationAtIndex(0);
 
       expect(service.getRoute().length).toBe(0);
@@ -70,7 +69,7 @@ describe('RouteService', () => {
     });
 
     it('refuses to store invalid moves in route', () => {
-      const [loc1, loc2, loc3, loc4] = service.map = mapFactory.invalidRoutes();
+      service.map = mapFactory.invalidRoutes();
       service.currentLocation = service.getLocationAtIndex(0);
 
       expect(service.getRoute().length).toBe(0);
@@ -87,53 +86,221 @@ describe('RouteService', () => {
   });
 
   describe('unlocking', () => {
-    it('accesses unlocked objects', () => {
-      const [loc1, loc2] = service.map = mapFactory.twoEmptyLocations();
-      service.currentLocation = service.getLocationAtIndex(0);
-      service.moveTo(1);
-      expect(service.getCurrentLocation()).toEqual(loc2);
+    describe('dependencies', () => {
+      it('correctly removes single dependencies', () => {
+        service.map = mapFactory.unlockByEnemy();
+        service.currentLocation = service.getLocationAtIndex(0);
+        expect(service.getLocationAtIndex(1).dependencies).toEqual({ "locations": [], "enemies": [0], "items": [], "hard_locked": false });
+        service.kill(0);
+        expect(service.getLocationAtIndex(1).dependencies).toEqual({ "locations": [], "enemies": [], "items": [], "hard_locked": false });
+      });
+
+      it('removes all dependencies on softlocked object after single one got resolved', () => {
+        service.map = mapFactory.stackingSoftlocksEnemies();
+        service.currentLocation = service.getLocationAtIndex(0);
+        expect(service.getLocationAtIndex(1).dependencies).toEqual({ "locations": [], "enemies": [0, 1], "items": [], "hard_locked": false });
+        service.kill(1);
+        expect(service.getLocationAtIndex(1).dependencies).toEqual({ "locations": [], "enemies": [], "items": [], "hard_locked": false });
+      });
+
+      it('needs explicit actions to remove each hardlocked dependency', () => {
+        service.map = mapFactory.hardLockedLocationByEnemies();
+        service.currentLocation = service.getLocationAtIndex(0);
+        expect(service.getLocationAtIndex(1).dependencies).toEqual({ "locations": [], "enemies": [0, 1], "items": [], "hard_locked": true });
+        service.kill(0);
+        expect(service.getLocationAtIndex(1).dependencies).toEqual({ "locations": [], "enemies": [1], "items": [], "hard_locked": true });
+        service.kill(1);
+        expect(service.getLocationAtIndex(1).dependencies).toEqual({ "locations": [], "enemies": [], "items": [], "hard_locked": true });
+      });
     });
 
-    it('refuses to access locked objects', () => {
-      const [loc1, loc2] = service.map = mapFactory.singleLockedLocations();
-      service.currentLocation = service.getLocationAtIndex(0);
-      service.moveTo(1);
-      expect(service.getCurrentLocation()).toEqual(loc1);
+    describe('access', () => {
+      it('accesses unlocked objects', () => {
+        const [, loc2] = service.map = mapFactory.twoEmptyLocations();
+        service.currentLocation = service.getLocationAtIndex(0);
+        service.moveTo(1);
+        expect(service.getCurrentLocation()).toEqual(loc2);
+      });
+
+      it('refuses to access locked objects', () => {
+        const [loc1,] = service.map = mapFactory.unlockByEnemy();
+        service.currentLocation = service.getLocationAtIndex(0);
+        service.moveTo(1);
+        expect(service.getCurrentLocation()).toEqual(loc1);
+      });
+
+      it('correctly unlocks objects once their dependency has been resolved', () => {
+        const [, loc2] = service.map = mapFactory.unlockByEnemy();
+        service.currentLocation = service.getLocationAtIndex(0);
+        service.kill(0)
+        service.moveTo(1);
+        expect(service.getCurrentLocation()).toEqual(loc2);
+      });
+
+      it('correctly unlocks softlocked objects when any of their dependencies get resolved', () => {
+        const [, loc2] = service.map = mapFactory.stackingSoftlocksEnemies();
+        service.currentLocation = service.getLocationAtIndex(0);
+        service.kill(1)
+        service.moveTo(1);
+        expect(service.getCurrentLocation()).toEqual(loc2);
+      });
+
+      it('does not unlock hardlocked objects when only part of their dependencies get resolved', () => {
+        const [loc1,] = service.map = mapFactory.hardLockedLocationByEnemies();
+        service.currentLocation = service.getLocationAtIndex(0);
+        service.kill(1)
+        service.moveTo(1);
+        expect(service.getCurrentLocation()).toEqual(loc1);
+      });
+
+      it('unlocks hardlocked objects if all their dependencies are resolved', () => {
+        const [, loc2] = service.map = mapFactory.hardLockedLocationByEnemies();
+        service.currentLocation = service.getLocationAtIndex(0);
+        service.kill(0)
+        service.kill(1)
+        service.moveTo(1);
+        expect(service.getCurrentLocation()).toEqual(loc2);
+      });
     });
 
-    it('correctly unlocks objects once their dependency has been resolved', () => {
-      const [loc1, loc2] = service.map = mapFactory.singleLockedLocations();
-      service.currentLocation = service.getLocationAtIndex(0);
-      service.kill(0)
-      service.moveTo(1);
-      expect(service.getCurrentLocation()).toEqual(loc2);
-    });
+    describe('areas where dependencies got modified', () => {
+      it('moving to area without unlocks does not affect anything', () => {
+        service.map = mapFactory.twoEmptyLocations();
+        service.currentLocation = service.getLocationAtIndex(0);
+        service.moveTo(1);
+        expect(service.getRoute()).toEqual([
+          {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: []}
+        ]);
+      });
 
-    it('correctly unlocks softlocked objects when any of their dependencies get resolved', () => {
-      const [loc1, loc2] = service.map = mapFactory.softLockedLocations();
-      service.currentLocation = service.getLocationAtIndex(0);
-      service.kill(1)
-      service.moveTo(1);
-      expect(service.getCurrentLocation()).toEqual(loc2);
-    });
+      it('collecting items without unlocks does not affect anything', () => {
+        service.map = mapFactory.basicItem();
+        service.currentLocation = service.getLocationAtIndex(0);
+        service.collect(0);
+        expect(service.getRoute()).toEqual([
+          {type: ActionType.PICKUP, target: 0, dependenciesRemovedFrom: []}
+        ]);
+      });
 
-    it('does not unlock hardlocked objects when only part of their dependencies get resolved', () => {
-      const [loc1, loc2] = service.map = mapFactory.hardLockedLocations();
-      service.currentLocation = service.getLocationAtIndex(0);
-      service.kill(1)
-      service.moveTo(1);
-      expect(service.getCurrentLocation()).toEqual(loc1);
-    });
+      it('killing enemies without unlocks does not affect anything', () => {
+        service.map = mapFactory.basicEnemy();
+        service.currentLocation = service.getLocationAtIndex(0);
+        service.kill(0);
+        expect(service.getRoute()).toEqual([
+          {type: ActionType.KILL, target: 0, dependenciesRemovedFrom: []}
+        ]);
+      });
 
-    it('unlocks hardlocked ojects if all their dependencies are resolved', () => {
-      const [loc1, loc2] = service.map = mapFactory.hardLockedLocations();
-      service.currentLocation = service.getLocationAtIndex(0);
-      service.kill(0)
-      service.kill(1)
-      service.moveTo(1);
-      expect(service.getCurrentLocation()).toEqual(loc2);
-    });
+      it('moving to area with unlock returns that as affected', () => {
+        service.map = mapFactory.unlockByMovement();
+        service.currentLocation = service.getLocationAtIndex(0);
+        service.moveTo(1);
+        expect(service.getRoute()).toEqual([
+          {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: [2]}
+        ]);
+      });
 
-    // TODO test areaswheredependenciesgotmodified
+      it('collecting item with unlock returns that as affected', () => {
+        service.map = mapFactory.unlockByItem();
+        service.currentLocation = service.getLocationAtIndex(0);
+        service.collect(0);
+        expect(service.getRoute()).toEqual([
+          {type: ActionType.PICKUP, target: 0, dependenciesRemovedFrom: [1]}
+        ]);
+      });
+
+      it('killing enemy with unlock returns that as affected', () => {
+        service.map = mapFactory.unlockByEnemy();
+        service.currentLocation = service.getLocationAtIndex(0);
+        service.kill(0);
+        expect(service.getRoute()).toEqual([
+          {type: ActionType.KILL, target: 0, dependenciesRemovedFrom: [1]}
+        ]);
+      });
+
+      it('moving to area with unlock previously done by other softlock doesnt affect anything', () => {
+        service.map = mapFactory.stackingSoftlocksLocation();
+        service.currentLocation = service.getLocationAtIndex(0);
+        service.moveTo(1);
+        expect(service.getRoute()).toEqual([
+          {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: [3]}
+        ]);
+        service.moveTo(2);
+        expect(service.getRoute()).toEqual([
+          {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: [3]},
+          {type: ActionType.GOTO, target: 2, dependenciesRemovedFrom: []}
+        ]);
+      });
+
+      it('collecting item with unlock previously done by other softlock doesnt affect anything', () => {
+        service.map = mapFactory.stackingSoftlocksItem();
+        service.currentLocation = service.getLocationAtIndex(0);
+        service.collect(0);
+        expect(service.getRoute()).toEqual([
+          {type: ActionType.PICKUP, target: 0, dependenciesRemovedFrom: [1]}
+        ]);
+        service.collect(1);
+        expect(service.getRoute()).toEqual([
+          {type: ActionType.PICKUP, target: 0, dependenciesRemovedFrom: [1]},
+          {type: ActionType.PICKUP, target: 1, dependenciesRemovedFrom: []}
+        ]);
+      });
+
+      it('killing enemy with unlock previously done by other softlock doesnt affect anything', () => {
+        service.map = mapFactory.stackingSoftlocksEnemies();
+        service.currentLocation = service.getLocationAtIndex(0);
+        service.kill(0);
+        expect(service.getRoute()).toEqual([
+          {type: ActionType.KILL, target: 0, dependenciesRemovedFrom: [1]}
+        ]);
+        service.kill(1);
+        expect(service.getRoute()).toEqual([
+          {type: ActionType.KILL, target: 0, dependenciesRemovedFrom: [1]},
+          {type: ActionType.KILL, target: 1, dependenciesRemovedFrom: []}
+        ]);
+      });
+
+      it('moving to area with unlock previously done by other hardlock does affect something', () => {
+        service.map = mapFactory.hardLockedLocationByLocations();
+        service.currentLocation = service.getLocationAtIndex(0);
+        service.moveTo(1);
+        expect(service.getRoute()).toEqual([
+          {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: [3]}
+        ]);
+        service.moveTo(2);
+        expect(service.getRoute()).toEqual([
+          {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: [3]},
+          {type: ActionType.GOTO, target: 2, dependenciesRemovedFrom: [3]}
+        ]);
+      });
+
+      it('collecting item with unlock previously done by other hardlock doesnt affect something', () => {
+        service.map = mapFactory.hardLockedLocationByItems();
+        service.currentLocation = service.getLocationAtIndex(0);
+        service.collect(0);
+        expect(service.getRoute()).toEqual([
+          {type: ActionType.PICKUP, target: 0, dependenciesRemovedFrom: [1]}
+        ]);
+        service.collect(1);
+        expect(service.getRoute()).toEqual([
+          {type: ActionType.PICKUP, target: 0, dependenciesRemovedFrom: [1]},
+          {type: ActionType.PICKUP, target: 1, dependenciesRemovedFrom: [1]}
+        ]);
+      });
+
+      it('killing enemy with unlock previously done by other hardlock doesnt affect something', () => {
+        service.map = mapFactory.hardLockedLocationByEnemies();
+        service.currentLocation = service.getLocationAtIndex(0);
+        service.kill(0);
+        expect(service.getRoute()).toEqual([
+          {type: ActionType.KILL, target: 0, dependenciesRemovedFrom: [1]}
+        ]);
+        service.kill(1);
+        expect(service.getRoute()).toEqual([
+          {type: ActionType.KILL, target: 0, dependenciesRemovedFrom: [1]},
+          {type: ActionType.KILL, target: 1, dependenciesRemovedFrom: [1]}
+        ]);
+      });
+    });
   });
 });

@@ -79,26 +79,31 @@ export class RouteService {
     return possible;
   }
 
-  // TODO Write tests for unlocking in general
-  performUnlocksBy(key: "locations" | "enemies" | "items", srcObjID:number, areaIDs: number[]): number[] {
-    let areasWhereDependenciesGotModified: number[] = [];
-    for (const ID of areaIDs) {
+  performUnlocksBy(key: "locations" | "enemies" | "items", keyObjID:number, affectedAreaIDs: number[]): number[] {
+    let dependenciesRemovedFrom: number[] = [];
+    for (const ID of affectedAreaIDs) {
 
       // This line removes the srcObject from the area's dependencies
       // TODO Refactor this into external method and test it properly
       const originalDependencies: number[] = [...this.getLocationAtIndex(ID).dependencies[key]];
-      this.getLocationAtIndex(ID).dependencies[key] = this.getLocationAtIndex(ID).dependencies[key].filter(obj => obj !== srcObjID);
-      areasWhereDependenciesGotModified = originalDependencies.filter((element) => !this.getLocationAtIndex(ID).dependencies[key].includes(element));
+      this.getLocationAtIndex(ID).dependencies[key] = this.getLocationAtIndex(ID).dependencies[key].filter(obj => obj !== keyObjID);
+      const compareArrays = (a: number[], b: number[]) =>
+        a.length === b.length &&
+        a.every((element, index) => element === b[index]);
+      const dependenciesAfterFiltering = this.getLocationAtIndex(ID).dependencies[key];
+      if (!compareArrays(originalDependencies, dependenciesAfterFiltering)) {
+        dependenciesRemovedFrom.push(ID);
+      }
 
       if (!this.getLocationAtIndex(ID).dependencies.hard_locked) {
         this.unlockAllDependencies(ID);
       }
     }
-    return areasWhereDependenciesGotModified;
+    return dependenciesRemovedFrom;
   }
 
   // Most locations are not hard locked, so that any of the possibly multiple dependencies might be used to unlock the location
-  // This method can then be used to remove all further dependecies
+  // This method can then be used to remove all further dependencies
   unlockAllDependencies(locationToBeUnlockedID: number):void {
     const loc: Location = this.getLocationAtIndex(locationToBeUnlockedID);
     const isHardLocked = loc.dependencies.hard_locked;
@@ -107,9 +112,10 @@ export class RouteService {
 
   moveTo(ID: number): void {
     if (this.possibleLocations().find(e => e.id == ID)) {
-      const areasWhereDependenciesGotModified:number[] = this.performUnlocksBy("locations", ID, this.currentLocation.unlocks);
-      this.route.push({type: ActionType.GOTO, target: ID, dependenciesRemovedFrom: areasWhereDependenciesGotModified});
-      this.currentLocation = this.getLocationAtIndex(ID);
+      const theLocation: Location = this.getLocationAtIndex(ID)
+      const dependenciesRemovedFrom: number[] = this.performUnlocksBy("locations", ID, theLocation.unlocks);
+      this.route.push({type: ActionType.GOTO, target: ID, dependenciesRemovedFrom: dependenciesRemovedFrom});
+      this.currentLocation = theLocation;
     } else {
       console.log("Error, tried to move to invalid location");
     }
@@ -120,8 +126,8 @@ export class RouteService {
     if (typeof theItem === undefined || theItem == undefined) {
       console.log('Error, item with ID '+ ID + ' is undefined!');
     } else {
-      const areasWhereDependenciesGotModified:number[] = this.performUnlocksBy("items", ID, theItem.unlocks);
-      this.route.push({type: ActionType.PICKUP, target: ID, dependenciesRemovedFrom: areasWhereDependenciesGotModified});
+      const dependenciesRemovedFrom: number[] = this.performUnlocksBy("items", ID, theItem.unlocks);
+      this.route.push({type: ActionType.PICKUP, target: ID, dependenciesRemovedFrom: dependenciesRemovedFrom});
       // @ts-ignore
       theItem.collected = true;
     }
@@ -132,8 +138,8 @@ export class RouteService {
     if (typeof enemy === undefined || enemy == undefined) {
       console.log('Error, enemy with ID '+ ID + ' is undefined!');
     } else {
-      const areasWhereDependenciesGotModified:number[] = this.performUnlocksBy("enemies", ID, enemy.unlocks);
-      this.route.push({type: ActionType.KILL, target: ID, dependenciesRemovedFrom: areasWhereDependenciesGotModified});
+      const dependenciesRemovedFrom: number[] = this.performUnlocksBy("enemies", ID, enemy.unlocks);
+      this.route.push({type: ActionType.KILL, target: ID, dependenciesRemovedFrom: dependenciesRemovedFrom});
       // @ts-ignore
       enemy.killed = true;
     }
