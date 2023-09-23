@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Location} from "./location.interface";
-//import {LOCATIONS} from "./mock-locations";
 import map from '../assets/map.json'
 import {PlayerAction} from './player-action.interface';
 import {ActionType} from "./action-type.interface";
 import {Item} from "./item.interface";
 import {Enemy} from "./enemy.interface";
 import {Dependencies} from "./dependencies.interface";
+import {compareArrays} from "./utils/arrayHelpers";
 
 @Injectable({
   providedIn: 'root'
@@ -83,13 +83,10 @@ export class RouteService {
     let dependenciesRemovedFrom: number[] = [];
     for (const ID of affectedAreaIDs) {
 
-      // This line removes the srcObject from the area's dependencies
       // TODO Refactor this into external method and test it properly
       const originalDependencies: number[] = [...this.getLocationAtIndex(ID).dependencies[key]];
       this.getLocationAtIndex(ID).dependencies[key] = this.getLocationAtIndex(ID).dependencies[key].filter(obj => obj !== keyObjID);
-      const compareArrays = (a: number[], b: number[]) =>
-        a.length === b.length &&
-        a.every((element, index) => element === b[index]);
+
       const dependenciesAfterFiltering = this.getLocationAtIndex(ID).dependencies[key];
       if (!compareArrays(originalDependencies, dependenciesAfterFiltering)) {
         dependenciesRemovedFrom.push(ID);
@@ -146,8 +143,7 @@ export class RouteService {
   }
 
   undoAction(action: PlayerAction): void {
-    // TODO extend placerAction interface to store info if it actually unlocked anything
-    // and if yes, what
+
   }
 
   hasDependencies(loc: Location) {
