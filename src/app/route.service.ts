@@ -144,24 +144,51 @@ export class RouteService {
 
   undoAction(action: PlayerAction): void {
     if (action == last(this.route)) {
-      if (action.dependenciesRemovedFrom.length == 0) {
-        // Undo last action, action didn't unlock anything
-        if (action.type == ActionType.GOTO) {
-          this.currentLocation = this.getLocationAtIndex(action.origin);
-        } else if (action.type == ActionType.PICKUP) {
-          const theItem: Item = this.getObjOfTypeAtCurrentLocationWithID("items", action.target) as Item;
-          theItem.collected = false;
-        } else if (action.type == ActionType.KILL) {
-          const theEnemy: Enemy = this.getObjOfTypeAtCurrentLocationWithID("enemies", action.target) as Enemy;
-          theEnemy.killed = false;
-        }
-        this.route.pop();
-      } else {
-        // Undo last action, action did unlock something
-      }
+      this.undoLastAction(action);
     } else {
-      console.log("Removing an action that isn't the last one is not implemented yet...");
+      this.undoMiddleAction(action);
     }
+  }
+
+  undoLastAction(action: PlayerAction): void {
+    if (action.dependenciesRemovedFrom.length == 0) {
+      this.undoLastNonUnlockingAction(action);
+    } else {
+      this.undoLastUnlockingAction(action);
+    }
+  }
+
+  undoLastNonUnlockingAction(action: PlayerAction): void {
+    if (action.type == ActionType.GOTO) {
+      this.undoLastNonUnlockingMoveAction(action);
+    } else if (action.type == ActionType.PICKUP) {
+      this.undoLastNonUnlockingPickupAction(action);
+    } else if (action.type == ActionType.KILL) {
+      this.undoLastNonUnlockingKillAction(action);
+    }
+    this.route.pop();
+  }
+
+  undoLastNonUnlockingMoveAction(action: PlayerAction): void {
+    this.currentLocation = this.getLocationAtIndex(action.origin);
+  }
+
+  undoLastNonUnlockingPickupAction(action: PlayerAction): void {
+    const theItem: Item = this.getObjOfTypeAtCurrentLocationWithID("items", action.target) as Item;
+    theItem.collected = false;
+  }
+
+  undoLastNonUnlockingKillAction(action: PlayerAction): void {
+    const theEnemy: Enemy = this.getObjOfTypeAtCurrentLocationWithID("enemies", action.target) as Enemy;
+    theEnemy.killed = false;
+  }
+
+  undoLastUnlockingAction(action: PlayerAction): void {
+    console.log("Removing an action that unlocked something isn't supported yet...");
+  }
+
+  undoMiddleAction(action: PlayerAction): void {
+    console.log("Removing an action that isn't the last one is not implemented yet...");
   }
 
   hasDependencies(loc: Location) {
