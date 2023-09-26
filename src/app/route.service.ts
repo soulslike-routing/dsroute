@@ -6,7 +6,7 @@ import {ActionType} from "./action-type.interface";
 import {Item} from "./item.interface";
 import {Enemy} from "./enemy.interface";
 import {Dependencies} from "./dependencies.interface";
-import {compareArrays} from "./utils/arrayHelpers";
+import {compareArrays, last} from "./utils/arrayHelpers";
 
 @Injectable({
   providedIn: 'root'
@@ -111,7 +111,7 @@ export class RouteService {
     if (this.possibleLocations().find(e => e.id == ID)) {
       const theLocation: Location = this.getLocationAtIndex(ID)
       const dependenciesRemovedFrom: number[] = this.performUnlocksBy("locations", ID, theLocation.unlocks);
-      this.route.push({type: ActionType.GOTO, target: ID, dependenciesRemovedFrom: dependenciesRemovedFrom});
+      this.route.push({type: ActionType.GOTO, target: ID, dependenciesRemovedFrom: dependenciesRemovedFrom, origin: this.currentLocation.id});
       this.currentLocation = theLocation;
     } else {
       console.log("Error, tried to move to invalid location");
@@ -124,7 +124,7 @@ export class RouteService {
       console.log('Error, item with ID '+ ID + ' is undefined!');
     } else {
       const dependenciesRemovedFrom: number[] = this.performUnlocksBy("items", ID, theItem.unlocks);
-      this.route.push({type: ActionType.PICKUP, target: ID, dependenciesRemovedFrom: dependenciesRemovedFrom});
+      this.route.push({type: ActionType.PICKUP, target: ID, dependenciesRemovedFrom: dependenciesRemovedFrom, origin: this.currentLocation.id});
       // @ts-ignore
       theItem.collected = true;
     }
@@ -136,14 +136,32 @@ export class RouteService {
       console.log('Error, enemy with ID '+ ID + ' is undefined!');
     } else {
       const dependenciesRemovedFrom: number[] = this.performUnlocksBy("enemies", ID, enemy.unlocks);
-      this.route.push({type: ActionType.KILL, target: ID, dependenciesRemovedFrom: dependenciesRemovedFrom});
+      this.route.push({type: ActionType.KILL, target: ID, dependenciesRemovedFrom: dependenciesRemovedFrom, origin: this.currentLocation.id});
       // @ts-ignore
       enemy.killed = true;
     }
   }
 
   undoAction(action: PlayerAction): void {
-
+    if (action == last(this.route)) {
+      if (action.dependenciesRemovedFrom.length == 0) {
+        // Undo last action, action didn't unlock anything
+        if (action.type == ActionType.GOTO) {
+          this.currentLocation = this.getLocationAtIndex(action.origin);
+        } else if (action.type == ActionType.PICKUP) {
+          const theItem: Item = this.getObjOfTypeAtCurrentLocationWithID("items", action.target) as Item;
+          theItem.collected = false;
+        } else if (action.type == ActionType.KILL) {
+          const theEnemy: Enemy = this.getObjOfTypeAtCurrentLocationWithID("enemies", action.target) as Enemy;
+          theEnemy.killed = false;
+        }
+        this.route.pop();
+      } else {
+        // Undo last action, action did unlock something
+      }
+    } else {
+      console.log("Removing an action that isn't the last one is not implemented yet...");
+    }
   }
 
   hasDependencies(loc: Location) {

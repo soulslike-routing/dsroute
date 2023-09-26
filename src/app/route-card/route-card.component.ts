@@ -17,7 +17,7 @@ export class RouteCardComponent {
   locations: any = locations;
   items: any = items;
   enemies: any = enemies;
-  selectedAction: PlayerAction = {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: []};
+  selectedAction: PlayerAction = {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: [], origin: 0};
   //@ts-ignore
   @ViewChild('modal') modal: ElementRef;
 

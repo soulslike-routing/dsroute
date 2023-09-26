@@ -4,5 +4,6 @@ export interface PlayerAction {
   type: ActionType;
   target: number;
   dependenciesRemovedFrom: number[];
+  origin: number;
 }
 
