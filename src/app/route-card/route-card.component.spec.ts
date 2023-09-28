@@ -9,6 +9,7 @@ import {Location} from "../location.interface";
 import locations from '../../assets/locations.json'
 import items from '../../assets/items.json'
 import enemies from '../../assets/enemies.json'
+import {MapService} from "../map.service";
 
 describe('RouteCardComponent', () => {
   let component: RouteCardComponent;
@@ -24,7 +25,8 @@ describe('RouteCardComponent', () => {
       providers: [
         RouteCardComponent,
         ChangeDetectorRef,
-        { provide: RouteService, useClass: MockRouteService },
+        { provide: MapService, useClass: MockMapService },
+        { provide: RouteService, useClass: MockRouteService }
       ]
     })
     .compileComponents();
@@ -160,8 +162,8 @@ describe('RouteCardComponent', () => {
 });
 
 @Injectable()
-class MockRouteService extends RouteService{
-  override currentLocation: Location = {
+class MockMapService extends MapService {
+  override map: Location[] = [{
     "id": 0,
     "name": "my_epic_locationname",
     "connections": [1],
@@ -169,17 +171,7 @@ class MockRouteService extends RouteService{
     "unlocks": [],
     "items": [],
     "enemies": []
-  };
-
-  override map: Location[] = [{
-      "id": 0,
-      "name": "my_epic_locationname",
-      "connections": [1],
-      "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
-      "unlocks": [],
-      "items": [],
-      "enemies": []
-    },
+  },
     {
       "id": 1,
       "name": "my_second_location",
@@ -198,4 +190,17 @@ class MockRouteService extends RouteService{
       "items": [],
       "enemies": [{"id": 0, "name": "my_epic_enemyname", "unlocks": [], "killed": false, "respawns": false}]
     }];
+}
+
+@Injectable()
+class MockRouteService extends RouteService{
+  override currentLocation: Location = {
+    "id": 0,
+    "name": "my_epic_locationname",
+    "connections": [1],
+    "dependencies": {"locations": [], "enemies": [], "items": [], "hard_locked": false},
+    "unlocks": [],
+    "items": [],
+    "enemies": []
+  };
 }

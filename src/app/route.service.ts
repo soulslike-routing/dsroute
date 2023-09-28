@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import {Location} from "./location.interface";
-import map from '../assets/map.json'
 import {PlayerAction} from './player-action.interface';
 import {ActionType} from "./action-type.interface";
 import {Item} from "./item.interface";
 import {Enemy} from "./enemy.interface";
 import {Dependencies} from "./dependencies.interface";
+import {MapService} from "./map.service";
 import {compareArrays, last} from "./utils/arrayHelpers";
 
 @Injectable({
@@ -14,14 +14,9 @@ import {compareArrays, last} from "./utils/arrayHelpers";
 export class RouteService {
 
   route: PlayerAction[] = [];
-  map: any = map.locations;
-  currentLocation: Location = this.getLocationAtIndex(0);
+  currentLocation: Location = this.mapService.getLocationAtIndex(0);
 
-  constructor() { }
-
-  getMap(): any {
-    return this.map;
-  }
+  constructor(public mapService: MapService) { }
 
   getRoute(): PlayerAction[] {
     return this.route;
@@ -29,10 +24,6 @@ export class RouteService {
 
   getCurrentLocation(): Location {
     return this.currentLocation;
-  }
-
-  getLocationAtIndex(index: number):Location {
-    return this.map[index];
   }
 
   getObjOfTypeAtCurrentLocationWithID(objType: "items" | "enemies", ID: number): Item | Enemy | undefined {
@@ -48,7 +39,7 @@ export class RouteService {
   possibleLocations(): Location[] {
     let possible: Location[] = [];
     for (const locID of this.currentLocation.connections) {
-      let loc = this.getLocationAtIndex(locID);
+      let loc = this.mapService.getLocationAtIndex(locID);
       if (loc == undefined) {
         break;
       }
@@ -84,15 +75,15 @@ export class RouteService {
     for (const ID of affectedAreaIDs) {
 
       // TODO Refactor this into external method and test it properly
-      const originalDependencies: number[] = [...this.getLocationAtIndex(ID).dependencies[key]];
-      this.getLocationAtIndex(ID).dependencies[key] = this.getLocationAtIndex(ID).dependencies[key].filter(obj => obj !== keyObjID);
+      const originalDependencies: number[] = [...this.mapService.getLocationAtIndex(ID).dependencies[key]];
+      this.mapService.getLocationAtIndex(ID).dependencies[key] = this.mapService.getLocationAtIndex(ID).dependencies[key].filter(obj => obj !== keyObjID);
 
-      const dependenciesAfterFiltering = this.getLocationAtIndex(ID).dependencies[key];
+      const dependenciesAfterFiltering = this.mapService.getLocationAtIndex(ID).dependencies[key];
       if (!compareArrays(originalDependencies, dependenciesAfterFiltering)) {
         dependenciesRemovedFrom.push(ID);
       }
 
-      if (!this.getLocationAtIndex(ID).dependencies.hard_locked) {
+      if (!this.mapService.getLocationAtIndex(ID).dependencies.hard_locked) {
         this.unlockAllDependencies(ID);
       }
     }
@@ -102,14 +93,14 @@ export class RouteService {
   // Most locations are not hard locked, so that any of the possibly multiple dependencies might be used to unlock the location
   // This method can then be used to remove all further dependencies
   unlockAllDependencies(locationToBeUnlockedID: number):void {
-    const loc: Location = this.getLocationAtIndex(locationToBeUnlockedID);
+    const loc: Location = this.mapService.getLocationAtIndex(locationToBeUnlockedID);
     const isHardLocked = loc.dependencies.hard_locked;
     loc.dependencies = {"locations":[],"enemies":[],"items":[],"hard_locked":isHardLocked};
   }
 
   moveTo(ID: number): void {
     if (this.possibleLocations().find(e => e.id == ID)) {
-      const theLocation: Location = this.getLocationAtIndex(ID)
+      const theLocation: Location = this.mapService.getLocationAtIndex(ID)
       const dependenciesRemovedFrom: number[] = this.performUnlocksBy("locations", ID, theLocation.unlocks);
       this.route.push({type: ActionType.GOTO, target: ID, dependenciesRemovedFrom: dependenciesRemovedFrom, origin: this.currentLocation.id});
       this.currentLocation = theLocation;
@@ -170,7 +161,7 @@ export class RouteService {
   }
 
   undoLastNonUnlockingMoveAction(action: PlayerAction): void {
-    this.currentLocation = this.getLocationAtIndex(action.origin);
+    this.currentLocation = this.mapService.getLocationAtIndex(action.origin);
   }
 
   undoLastNonUnlockingPickupAction(action: PlayerAction): void {
