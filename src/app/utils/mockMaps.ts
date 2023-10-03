@@ -69,6 +69,21 @@ class MapFactory {
     }];
   }
 
+  basicItems(): Location[] {
+    return [{
+      "id": 0,
+      "name": "location0",
+      "connections": [1],
+      "dependencies": { "locations": [], "enemies": [], "items": [], "hard_locked": false },
+      "unlocks": [],
+      "items": [
+        {"id": 0, "name": "item0", "collected": false, "count":  1, "unlocks": []},
+        {"id": 1, "name": "item1", "collected": false, "count":  1, "unlocks": []},
+      ],
+      "enemies": []
+    }];
+  }
+
   basicEnemy(): Location[] {
     return [{
       "id": 0,
@@ -79,6 +94,21 @@ class MapFactory {
       "items": [],
       "enemies": [
         { "id": 0, "name": "enemy0", "unlocks": [], "killed": false, "respawns": false },
+      ]
+    }];
+  }
+
+  basicEnemies(): Location[] {
+    return [{
+      "id": 0,
+      "name": "location0",
+      "connections": [1],
+      "dependencies": { "locations": [], "enemies": [], "items": [], "hard_locked": false },
+      "unlocks": [],
+      "items": [],
+      "enemies": [
+        { "id": 0, "name": "enemy0", "unlocks": [], "killed": false, "respawns": false },
+        { "id": 1, "name": "enemy1", "unlocks": [], "killed": false, "respawns": false },
       ]
     }];
   }

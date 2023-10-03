@@ -348,6 +348,67 @@ describe('RouteService', () => {
       expect(service.getRoute()).toEqual([]);
     });
 
+    it('undoes multiple simple movements without unlocks or dependencies', () => {
+      const [loc0, loc1] = service.mapService.map = mapFactory.twoEmptyLocations();
+      service.currentLocation = service.mapService.getLocationAtIndex(0);
+
+      service.moveTo(1);
+      service.moveTo(0);
+      expect(service.getCurrentLocation()).toEqual(loc0);
+      expect(service.getRoute().length).toBe(2);
+      expect(service.getRoute()).toEqual([
+        {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: [], origin: 0},
+        {type: ActionType.GOTO, target: 0, dependenciesRemovedFrom: [], origin: 1}
+      ]);
+
+      service.undoworker.undoAction(service.getRoute()[0]);
+      expect(service.getCurrentLocation()).toEqual(loc0);
+      expect(service.getRoute().length).toBe(0);
+      expect(service.getRoute()).toEqual([]);
+    });
+
+    it('undoes multiple simple collects without unlocks or dependencies', () => {
+      service.mapService.map = mapFactory.basicItems();
+      service.currentLocation = service.mapService.getLocationAtIndex(0);
+
+      service.collect(0);
+      service.collect(1);
+      expect(service.getCurrentLocation().items[0].collected).toBeTrue();
+      expect(service.getCurrentLocation().items[1].collected).toBeTrue();
+      expect(service.getRoute().length).toBe(2);
+      expect(service.getRoute()).toEqual([
+        {type: ActionType.PICKUP, target: 0, dependenciesRemovedFrom: [], origin: 0},
+        {type: ActionType.PICKUP, target: 1, dependenciesRemovedFrom: [], origin: 0}
+      ]);
+
+      service.undoworker.undoAction(service.getRoute()[0]);
+      expect(service.getCurrentLocation().items[0].collected).toBeFalse();
+      expect(service.getCurrentLocation().items[1].collected).toBeFalse();
+      expect(service.getRoute().length).toBe(0);
+      expect(service.getRoute()).toEqual([]);
+    });
+
+    it('undoes multiple simple kills without unlocks or dependencies', () => {
+      service.mapService.map = mapFactory.basicEnemies();
+      service.currentLocation = service.mapService.getLocationAtIndex(0);
+
+      service.kill(0);
+      service.kill(1);
+      expect(service.getCurrentLocation().enemies[0].killed).toBeTrue();
+      expect(service.getCurrentLocation().enemies[1].killed).toBeTrue();
+      expect(service.getRoute().length).toBe(2);
+      expect(service.getRoute()).toEqual([
+        {type: ActionType.KILL, target: 0, dependenciesRemovedFrom: [], origin: 0},
+        {type: ActionType.KILL, target: 1, dependenciesRemovedFrom: [], origin: 0}
+      ]);
+
+      service.undoworker.undoAction(service.getRoute()[0]);
+      expect(service.getCurrentLocation().enemies[0].killed).toBeFalse();
+      expect(service.getCurrentLocation().enemies[1].killed).toBeFalse();
+      expect(service.getRoute().length).toBe(0);
+      expect(service.getRoute()).toEqual([]);
+    });
+
     it('undoes movement that unlocked area and re-locks that area', () => {
       const [loc0, loc1,] = service.mapService.map = mapFactory.unlockByMovement();
       service.currentLocation = service.mapService.getLocationAtIndex(0);

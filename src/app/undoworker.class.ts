@@ -60,7 +60,9 @@ export class Undoworker {
   }
 
   undoMiddleAction(action: PlayerAction): void {
-    console.log("Removing an action that isn't the last one is not implemented yet...");
+    while (action != last(this.routeService.route)) {
+      this.undoLastAction(last(this.routeService.route));
+    }
+    this.undoLastAction(last(this.routeService.route));
   }
-
 }
