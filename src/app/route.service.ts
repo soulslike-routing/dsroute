@@ -7,6 +7,7 @@ import {Enemy} from "./enemy.interface";
 import {Dependencies} from "./dependencies.interface";
 import {MapService} from "./map.service";
 import {compareArrays, last} from "./utils/arrayHelpers";
+import {Undoworker} from "./undoworker.class";
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ export class RouteService {
 
   route: PlayerAction[] = [];
   currentLocation: Location = this.mapService.getLocationAtIndex(0);
+  undoworker: Undoworker = new Undoworker(this);
 
   constructor(public mapService: MapService) { }
 
@@ -131,55 +133,6 @@ export class RouteService {
       // @ts-ignore
       enemy.killed = true;
     }
-  }
-
-  undoAction(action: PlayerAction): void {
-    if (action == last(this.route)) {
-      this.undoLastAction(action);
-    } else {
-      this.undoMiddleAction(action);
-    }
-  }
-
-  undoLastAction(action: PlayerAction): void {
-    if (action.dependenciesRemovedFrom.length == 0) {
-      this.undoLastNonUnlockingAction(action);
-    } else {
-      this.undoLastUnlockingAction(action);
-    }
-  }
-
-  undoLastNonUnlockingAction(action: PlayerAction): void {
-    if (action.type == ActionType.GOTO) {
-      this.undoLastNonUnlockingMoveAction(action);
-    } else if (action.type == ActionType.PICKUP) {
-      this.undoLastNonUnlockingPickupAction(action);
-    } else if (action.type == ActionType.KILL) {
-      this.undoLastNonUnlockingKillAction(action);
-    }
-    this.route.pop();
-  }
-
-  undoLastNonUnlockingMoveAction(action: PlayerAction): void {
-    this.currentLocation = this.mapService.getLocationAtIndex(action.origin);
-  }
-
-  undoLastNonUnlockingPickupAction(action: PlayerAction): void {
-    const theItem: Item = this.getObjOfTypeAtCurrentLocationWithID("items", action.target) as Item;
-    theItem.collected = false;
-  }
-
-  undoLastNonUnlockingKillAction(action: PlayerAction): void {
-    const theEnemy: Enemy = this.getObjOfTypeAtCurrentLocationWithID("enemies", action.target) as Enemy;
-    theEnemy.killed = false;
-  }
-
-  undoLastUnlockingAction(action: PlayerAction): void {
-    console.log("Removing an action that unlocked something isn't supported yet...");
-  }
-
-  undoMiddleAction(action: PlayerAction): void {
-    console.log("Removing an action that isn't the last one is not implemented yet...");
   }
 
   hasDependencies(loc: Location) {

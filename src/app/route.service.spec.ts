@@ -308,7 +308,7 @@ describe('RouteService', () => {
         {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: [], origin: 0}
       ]);
 
-      service.undoAction(last(service.getRoute()));
+      service.undoworker.undoAction(last(service.getRoute()));
       expect(service.getCurrentLocation()).toEqual(loc0);
       expect(service.getRoute().length).toBe(0);
       expect(service.getRoute()).toEqual([]);
@@ -325,7 +325,7 @@ describe('RouteService', () => {
         {type: ActionType.PICKUP, target: 0, dependenciesRemovedFrom: [], origin: 0}
       ]);
 
-      service.undoAction(last(service.getRoute()));
+      service.undoworker.undoAction(last(service.getRoute()));
       expect(service.getCurrentLocation().items[0].collected).toBeFalse();
       expect(service.getRoute().length).toBe(0);
       expect(service.getRoute()).toEqual([]);
@@ -342,7 +342,7 @@ describe('RouteService', () => {
         {type: ActionType.KILL, target: 0, dependenciesRemovedFrom: [], origin: 0}
       ]);
 
-      service.undoAction(last(service.getRoute()));
+      service.undoworker.undoAction(last(service.getRoute()));
       expect(service.getCurrentLocation().enemies[0].killed).toBeFalse();
       expect(service.getRoute().length).toBe(0);
       expect(service.getRoute()).toEqual([]);
@@ -361,7 +361,7 @@ describe('RouteService', () => {
         {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: [2], origin: 0}
       ]);
 
-      service.undoAction(last(service.getRoute()));
+      service.undoworker.undoAction(last(service.getRoute()));
       expect(service.getCurrentLocation()).toEqual(loc0);
       expect(service.mapService.getLocationAtIndex(2).dependencies.locations.length).toBe(1);
       expect(service.mapService.getLocationAtIndex(2).dependencies.locations).toEqual([1]);
@@ -382,7 +382,7 @@ describe('RouteService', () => {
         {type: ActionType.PICKUP, target: 0, dependenciesRemovedFrom: [1], origin: 0}
       ]);
 
-      service.undoAction(last(service.getRoute()));
+      service.undoworker.undoAction(last(service.getRoute()));
       expect(service.getCurrentLocation().items[0].collected).toBeFalse();
       expect(service.mapService.getLocationAtIndex(1).dependencies.items.length).toBe(1);
       expect(service.mapService.getLocationAtIndex(1).dependencies.items).toEqual([0]);
@@ -403,7 +403,7 @@ describe('RouteService', () => {
         {type: ActionType.KILL, target: 0, dependenciesRemovedFrom: [1], origin: 0}
       ]);
 
-      service.undoAction(last(service.getRoute()));
+      service.undoworker.undoAction(last(service.getRoute()));
       expect(service.getCurrentLocation().enemies[0].killed).toBeFalse();
       expect(service.mapService.getLocationAtIndex(1).dependencies.enemies.length).toBe(1);
       expect(service.mapService.getLocationAtIndex(1).dependencies.enemies).toEqual([0]);
@@ -428,7 +428,7 @@ describe('RouteService', () => {
         {type: ActionType.GOTO, target: 1, dependenciesRemovedFrom: [], origin: 0},
       ]);
 
-      service.undoAction(last(service.getRoute()));
+      service.undoworker.undoAction(last(service.getRoute()));
       expect(service.getCurrentLocation()).toEqual(loc0);
       expect(service.mapService.getLocationAtIndex(2).dependencies.locations.length).toBe(0);
       expect(service.mapService.getLocationAtIndex(2).dependencies.locations).toEqual([]);
@@ -454,9 +454,9 @@ describe('RouteService', () => {
       service.moveTo(0);
       service.moveTo(1);
 
-      service.undoAction(last(service.getRoute()));
-      service.undoAction(last(service.getRoute()));
-      service.undoAction(last(service.getRoute()));
+      service.undoworker.undoAction(last(service.getRoute()));
+      service.undoworker.undoAction(last(service.getRoute()));
+      service.undoworker.undoAction(last(service.getRoute()));
       expect(service.getCurrentLocation()).toEqual(loc0);
       expect(service.mapService.getLocationAtIndex(2).dependencies.locations.length).toBe(1);
       expect(service.mapService.getLocationAtIndex(2).dependencies.locations).toEqual([1]);
